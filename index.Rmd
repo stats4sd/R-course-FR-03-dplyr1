@@ -11,6 +11,7 @@ description: >
 ---
 
 
+
 ## Overview
 
 In this session, we will learn how to manipulate data and in particular, to select/modify/create columns, filter/order rows and calculate summaries. Knowing how to manipulate data is an essential skill that anyone working with data needs to acquire. We will focus on using the package `dplyr`, which is part of tidyverse, like ggplot2, and is probably the most commonly used package when it comes to this sort of data manipulation. I'm saying this *sort of data manipulation*, because we are not going to talk about more advanced manipulations like merging datasets or going from wide to long format. We will discuss these later, during the last session of the course.
