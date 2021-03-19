@@ -1,5 +1,5 @@
 ---
-title: "Manipulating Data using dplyr: part 1"
+title: "Manipulation des données à l'aide de dplyr : partie 1"
 output: 
   learnr::tutorial:
     progressive: true
@@ -7,31 +7,30 @@ output:
     df_print: paged
 runtime: shiny_prerendered
 description: >
-  Learn to manipulate data with the package dplyr.
+  Apprenez à manipuler les données avec le package dplyr.
 ---
-
 
 
 ## Overview
 
-In this session, we will learn how to manipulate data and in particular, to select/modify/create columns, filter/order rows and calculate summaries. Knowing how to manipulate data is an essential skill that anyone working with data needs to acquire. We will focus on using the package `dplyr`, which is part of tidyverse, like ggplot2, and is probably the most commonly used package when it comes to this sort of data manipulation. I'm saying this *sort of data manipulation*, because we are not going to talk about more advanced manipulations like merging datasets or going from wide to long format. We will discuss these later, during the last session of the course.
+Au cours de cette session, nous apprendrons à manipuler les données et, en particulier, à sélectionner/modifier/créer des colonnes, à filtrer/ordonner des lignes et à calculer des résumés statistiques. Savoir manipuler des données est une compétence essentielle que toute personne travaillant avec des données doit acquérir. Nous nous concentrerons sur l'utilisation du package `dplyr`, qui fait partie de tidyverse, comme ggplot2, et qui est probablement le package le plus utilisé pour ce type de manipulation de données. Je dis ce *type de manipulation de données*, parce que nous n'allons pas parler de manipulations plus avancées comme la fusion de differents jeux de données ou le passage du format large au format long. Nous en parlerons plus tard, lors de la dernière session du cours.
 
-This session is split into two parts, and you'll have a series of exercises and questions along the way and at the end.
+Cette session est divisée en deux parties, et vous aurez une série d'exercices et de questions en cours de route et à la fin.
 
-1. In the first part - this workbook - we will mainly focus on learning how to use 5 of the 6 core functions of the package dplyr. These functions will help you perform all the data manipulations mentioned in the first sentence, that is:
-    + select columns - with `select()`
-    + filter rows - with `filter()`
-    + reorder rows - with `arrange()`
-    + calculate summaries - with `summarise()`
-    + create/modify columns - with `mutate()`
+1. Dans la première partie - ce tutoriel - nous nous concentrerons principalement sur l'apprentissage de 5 des 6 fonctions de base du package dplyr. Ces fonctions vous aideront à effectuer toutes les manipulations de données mentionnées dans la première phrase, c'est-à-dire :
+    + sélectionner des colonnes - avec `select()`
+    + selectionner des lignes - avec `filter()`
+    + réordonner les lignes - avec `arrange()`
+    + calculer des résumés statistiques - avec `summarise()`
+    + créer/modifier des colonnes - avec `mutate()`
 
-2. In the second part, we will learn how to efficiently combine all these functions and a couple of new ones, to perform all the complex sequences of manipulations that you will need in your work. In particular, we will learn to
-    + perform a sequence of manipulation by saving and reusing the output of functions
-    + use the function `group_by()` which will allow manipulations like summaries or filters by groups of observations
-    + use the pipe `%>%`, an operator similar to the `+` in ggplot, that makes it very easy to perform cascades of manipulations on a data frame
+2. Dans la deuxième partie, nous apprendrons à combiner efficacement toutes ces fonctions et quelques nouvelles, pour effectuer toutes les séquences complexes de manipulations dont vous aurez besoin dans votre travail. En particulier, nous apprendrons à
+    + effectuer une séquence de manipulation en sauvegardant et en réutilisant le résultat des fonctions
+    + utiliser la fonction `group_by()` qui permettra de faire des manipulations par groupes d'observations
+    + utiliser l'operateur `%>%`, un opérateur similaire au `+` dans ggplot, qui permet d'effectuer très facilement un ensemble de manipulations sur un tableau de données
 
 
-Let's start with a video where I give you more information about data manipulation, the package dplyr and its core functions.
+Commençons par une vidéo où je vous donne plus d'informations sur la manipulation des données, le package dplyr et ses fonctions de base.
 
 ![](https://youtu.be/koj23uKL45I)
 
@@ -47,17 +46,17 @@ BeanSurvey<-readRDS("bean_survey.RDS")
 ```
 
 
-### loading dplyr
+### chargement de dplyr
 
-Like ggplot, dplyr is an additional package that needs to be installed and then loaded. We haven't learnt how to properly do that yet, but in this workbook dplyr is already pre-loaded, so we're good to go and learn about the core functions of dplyr!
+Comme ggplot, dplyr est une librairie supplémentaire qui doit être installée puis chargée. Nous n'avons pas encore appris à faire ca, mais dans ce manuel, dplyr est déjà préchargé, nous sommes donc prêts à aller découvrir les fonctions principales de dplyr !
 
-### the dataset
+### les données
 
-We will do so using a slightly modified version of the dataset `BeanSurvey` that you already explored in the previous workbook. It is already loaded and so you may remember that you can have a quick look at it by simply typing its name:
+Nous utiliserons pour ce tutoriel une version légèrement modifiée du jeu de données "BeanSurvey" que vous avez déjà exploré dans le précédent tutoriel. Il est déjà chargé et l'on peut y jeter un coup d'œil rapide en tapant simplement le nom du tableau de donnees :
 ```{r dataset, exercise = TRUE}
 BeanSurvey
 ```
-Have a look at the appendix if you want to have a better look at it and remind yourself of the meaning of each variable.
+Jetez un coup d'œil à l'annexe si vous voulez y jeter un meilleur coup d'œil et vous rappeler de la signification de chaque variable.
 
 
 
@@ -65,66 +64,66 @@ Have a look at the appendix if you want to have a better look at it and remind y
 
 ## select()
 
-The `select()` function allows you to retrieve columns from a dataset. It's not the most important function of dplyr, but it is probably one of the simplest. Inside the function you first indicate the dataset and then the columns you want to keep
+La fonction `select()` vous permet de récupérer des colonnes d'un tableau de données. Ce n'est pas la fonction la plus importante de dplyr, mais c'est probablement l'une des plus simples. Dans la fonction, vous indiquez d'abord le tableau de données, puis les colonnes que vous voulez conserver
 
-Let's first retrieve the column `AGEHH`.
+Retrouvons d'abord la colonne "AGEHH".
 
 ```{r select_1, exercise = TRUE}
 select(BeanSurvey, AGEHH)
 ```
 
-You will see that all the functions of dplyr are based on the same basic syntax where the first argument is a data frame. Here, our data frame is called 'BeanSurvey', so the first thing we write inside the brackets of the function is 'BeanSurvey'. Then we indicated the name of the column to retrieve, that is 'AGEHH'.
+Vous verrez que toutes les fonctions de dplyr sont basées sur la même syntaxe de base où le premier argument est un tableau de données. Ici, notre tableau de données est appelé "BeanSurvey", donc la première chose que nous écrivons entre les parenthèses de la fonction est "BeanSurvey". Ensuite, nous avons indiqué le nom de la colonne à extraire, c'est-à-dire "AGEHH".
 
-To retrieve more than one column, simply list all the columns you want, separated with commas.
+Pour récupérer plus d'une colonne, il suffit d'énumérer toutes les colonnes que vous voulez, en les séparant par des virgules.
 
 ```{r select_2, exercise = TRUE}
 select(BeanSurvey, VILLAGE, GENDERHH, AGEHH, LANDAREA)
 ```
 
 
-Don't forget that R is case sensitive by the way. If you spell the name of a column wrongly, it will not work!  Can you spot what is wrong in the command below? Make the necessary corrections to make it work, and check the solution if you struggle.
+N'oubliez pas que R est sensible à la casse, au fait. Si vous écrivez mal le nom d'une colonne, cela ne fonctionnera pas !  Pouvez-vous repérer ce qui ne va pas dans la commande ci-dessous ? Faites les corrections nécessaires pour qu'elle fonctionne, et vérifiez la solution si vous avez du mal.
 
 ```{r select_2_bis, exercise = TRUE}
 select(BeanSurvey, village, GENDERH, LANDAREA)
 ```
 
 ```{r select_2_bis-solution}
-# 'village' should be written with capital letters!
-# If you correct it, it will still not work, because the column GENDERH doesn't exist.
-# it should be 'GENDERHH' (with two 'H' instead of just one)
-# Here is the correct command:
+#  "village" doit être écrit en majuscules !
+# Si vous le corrigez, cela ne fonctionnera toujours pas, car la colonne GENDERH n'existe pas.
+# Il faut écrire "GENDERHH" (avec deux "H" au lieu d'un seul)
+# Voici la commande correcte :
 select(BeanSurvey, VILLAGE, GENDERHH, LANDAREA)
 ```
 
 
-`select()` follows your instructions, so if you change the order of the columns in your command, the order in the output will also change.
+`select()` suit vos instructions, donc si vous changez l'ordre des colonnes dans votre commande, l'ordre dans la sortie changera également.
 
 ```{r select_3, exercise = TRUE}
 select(BeanSurvey, GENDERHH, LANDAREA, VILLAGE, ID)
 
 ```
 
-The first column of our dataset, `ID`, is now showed last!
+La première colonne de notre jeu de données, "ID", est maintenant affichée en dernier !
 
 
-When you want to retrieve lots of columns, it quickly becomes painful to list them all individually. Instead, you can use a colon `:` which asks R to retrieve all the columns that are positioned between the columns you indicate to the left and right of the colon. You could translate the colon by **to** and `MATOKE:COFFEE` by "all the columns from MATOKE **to** COFFEE" . So in the following command, we are asking R to retrieve all the columns from MATOKE to COFFEE:
+Lorsque vous voulez récupérer de nombreuses colonnes, il devient rapidement pénible de les énumérer toutes individuellement. A la place, vous pouvez utiliser un deux-points `:` qui demande à R de récupérer toutes les colonnes qui sont positionnées entre les colonnes que vous indiquez à gauche et à droite du deux-points. Vous pourriez traduire les deux points par **à** et `MATOKE:COFFEE` par "toutes les colonnes de MATOKE **à** COFFEE" . Donc dans la commande suivante, nous demandons à R de récupérer toutes les colonnes de MATOKE à COFFEE :
 
 ```{r select_4, exercise = TRUE}
 select(BeanSurvey, MATOKE:COFFEE)
 ```
 
-And you can combine both methods to try and get all the columns you want in the least amount of effort.
+Et vous pouvez combiner les deux méthodes pour essayer d'obtenir toutes les colonnes que vous voulez avec le moins d'efforts possible.
 
 ```{r select_5, exercise = TRUE}
 select(BeanSurvey, OCCUHH, MATOKE:COFFEE, INTERCROP)
 ```
 
-Note that if you struggle finding the names of your columns, `colnames()` is a quick way to list them all: 
+Notez que si vous avez du mal à trouver les noms de vos colonnes, `colnames()` est un moyen rapide de les lister toutes :
 ```{r select_5b, exercise=TRUE}
 colnames(BeanSurvey)
 ```
 
-**Question: Shorten the following command by using the "colon" operator whenever it's possible **
+**Question : Raccourcissez la commande suivante en utilisant l'opérateur "deux points" chaque fois que c'est possible **.
 ```{r select_6, exercise=TRUE}
 select(BeanSurvey, VILLAGE, HHTYPE, GENDERHH, AGEHH, MATOKE, MAIZE, BEANS, BANANA, CASSAVA, COFFEE, LANDAREA, INTERCROP)
 ```
@@ -136,126 +135,126 @@ select(BeanSurvey, VILLAGE:AGEHH, MATOKE:LANDAREA, INTERCROP)
 
 ## filter()
 
-When you want to retrieve specific rows rather than columns, you use the function `filter()`. It is a function that you will use very often, for example, to filter out observations that appear to be of bad quality or that are not relevant for your analysis. The way it works is similar to `select()`: we write the dataset first, and then we indicate the rows that we want to retrieve. Except that our rows don't have names, so we use conditions on some of our columns instead. In the command below, the expression `ADULTS>3` tells R that we want all the rows for which the column `ADULTS` has a value greater than 3. That is, we are asking R to keep all the households that have more than 3 adults
+Lorsque vous souhaitez récupérer des lignes spécifiques plutôt que des colonnes, vous utilisez la fonction `filter()`. C'est une fonction que vous utiliserez très souvent, par exemple, pour filtrer les observations qui semblent être de mauvaise qualité ou qui ne sont pas pertinentes pour votre analyse. Son fonctionnement est similaire à celui de la fonction `select()` : nous écrivons d'abord le tableau de données, puis nous indiquons les lignes que nous voulons récupérer. Sauf que nos lignes n'ont pas de nom, nous utilisons donc des conditions sur certaines de nos colonnes a la place. Dans la commande ci-dessous, l'expression "ADULTS>3" indique à R que nous voulons toutes les lignes pour lesquelles la colonne "ADULTS" a une valeur supérieure à 3. Autrement dit, nous demandons à R de garder tous les ménages qui ont plus de 3 adultes
 
 
 ```{r filter_1, exercise = TRUE}
 filter(BeanSurvey, ADULTS>3)
 ```
 
-As you can see, R returns us all the columns, but the number of rows is now 5 instead of 50.
+Comme vous pouvez le voir, R nous renvoie toutes les colonnes, mais le nombre de lignes est maintenant de 5 au lieu de 50.
 
 
-In R, the syntax to check if a value is greater or lower than another value is intuitive. You use the symbols `>` and `<` like we just did.
-However, to check if a value is EQUAL TO another value, you need to use `==`, not `=`. That's because a single equal has another use:
+Dans R, la syntaxe pour vérifier si une valeur est supérieure ou inférieure à une autre valeur est intuitive. Vous utilisez les symboles ">" et "<" comme nous venons de le faire.
+Cependant, pour vérifier si une valeur est ÉGALE à une autre valeur, vous devez utiliser `==`, et non pas `=`. C'est parce qu'un simple signe d'égalité a une autre utilité :
 
-- A single equals sign is a *statement*. When you write `x=y`, it sets x to be equal y.
-- A double equals sign is a *question*. When you write `x==y`, you're asking R ***Is x equal to y?***. If the response is yes, the condition is verified.
+- Un seul signe d'égalité est une *déclaration*. Lorsque vous écrivez "x=y", cela signifie que x est égal à y.
+- Un signe double égal est une *question*. Quand vous écrivez "x==y", vous demandez a R ***Est-ce que x est égal à y ?***. Si la réponse est oui, la condition est vérifiée.
 
-So to retrieve all the households for which the household head is of gender female, we use the double equals sign.
+Donc, pour retrouver tous les ménages dont le chef de ménage est de sexe féminin, nous utilisons le signe double égal.
 ```{r filter_2, exercise = TRUE}
 filter(BeanSurvey, GENDERHH=="female")
 ```
-In the command above R will check all the rows of the dataset BeanSurvey and returns the ones where the column `GENDERHH` takes the value "female". Note the quotes around *female*. Whenever you write a string of text that is not an object or a column, you need to encapsulate it between quotes. Otherwise R will try to interpret it as an object or the name of a column.
+Dans la commande ci-dessus, R va vérifier toutes les lignes du tableau de données BeanSurvey et renvoie celles où la colonne "GENDERHH" prend la valeur "female". Notez les guillemets autour de *female*. Chaque fois que vous écrivez une chaîne de texte qui n'est pas un objet ou une colonne, vous devez l'encapsuler entre guillemets. Sinon, R essaiera de l'interpréter comme un objet ou le nom d'une colonne.
 
 
-Also note that in R, you will not always get an error when you make a mistake. For example, if you write "female" with a capital F, you will just get no result:
+Notez également que dans R, vous n'obtiendrez pas toujours une erreur lorsque vous faites une faute. Par exemple, si vous écrivez "female" avec un F majuscule, vous n'obtiendrez tout simplement pas de résultat :
 
 ```{r filter_3, exercise = TRUE}
 filter(BeanSurvey, GENDERHH=="Female")
 ```
 
-That's because even though R does not give you the answer you want, the command you wrote is totally valid. You're asking R to retrieve all the rows where Gender takes the value "Female". There are none, because R is case sensitive and female is always written with a lower case **f** in our dataset. If you were to write "**GENDER**" instead of "**GENDERHH**" on the left of the double equals sign though, you would get an error, because there's no column named "GENDER", so R cannot check the condition.
+C'est parce que même si R ne vous donne pas la réponse que vous voulez, la commande que vous avez écrite est tout à fait valable. Vous demandez à R de récupérer toutes les lignes où le sexe prend la valeur "Female". Il n'y en a pas, car R est sensible à la casse et "Female" est toujours écrit avec une minuscule **f** dans notre jeu de données. Si vous deviez cependant écrire "**GENDER**" au lieu de "**GENDERHH**" à gauche du signe "double égal", vous obtiendriez une erreur, car il n'y a pas de colonne nommée "GENDER", donc R ne peut pas vérifier la condition.
 
 
 
-### using multiple conditions
+### en utilisant des conditions multiples
 
-You can also use multiple conditions and additional functions to filter rows. Here are the main logical symbols that you can use when building conditions in R:
+Vous pouvez également utiliser plusieurs conditions et des fonctions supplémentaires pour filtrer les lignes. Voici les principaux symboles logiques que vous pouvez utiliser lorsque vous créez des conditions dans R :
 
- `==` means EQUALS  
-`!=` means DIFFERENT  
-`<` means LESS THAN  
-`>` means GREATER THAN  
-`<=` means LESS THAN OR EQUAL TO  
-`>=` means GREATER THAN OR EQUAL TO
+ `==` signifie EGALE  
+`!=` signifie DIFFÉRENT  
+`<` signifie INFERIEUR À  
+`>` signifie SUPERIEUR À  
+`<=` signifie INFERIEUR OU EGALE À 
+`>=` signifie SUPERIEUR OU EGALE À
 
-`&` means AND  
-`|` means OR  
-`!` means NOT 
+`&` signifie ET  
+`|` signifie OU  
+`!` signifie PAS 
 
-If you're not familiar with the use of logical operations, have a look at the first 3 minutes of this video: <a href="https://www.youtube.com/watch?v=6PpQS-YLWDQ" target="_blank"> R Tutorial - Logical Operators and Vectors in R </a>
+Si vous n'êtes pas familier avec l'utilisation des opérations logiques, jetez un coup d'oeil aux 3 premières minutes de cette vidéo : <a href="https://www.youtube.com/watch?v=6PpQS-YLWDQ" target="_blank"> Tutoriel R - Opérateurs et vecteurs logiques en R </a>
 
-Let's use multiple conditions in a couple of examples. One thing you should do to check the quality of your data is to inspect it for inconsistency. For example, it would make no sense to have households that 'grow beans for sale', but 'don't grow beans'! That is we can't have at the same time the value of the column `SELLBEANS` be "yes" and the value of the column `BEANS` be "no". Lets' check that no row is satisfying this absurd double condition with `filter()`:
+Utilisons des conditions multiples dans quelques exemples. Une chose que vous devez faire pour vérifier la qualité de vos données est de les inspecter pour en vérifier la cohérence. Par exemple, il serait absurde que des ménages "cultivent des haricots pour la vente", mais "ne cultivent pas de haricots" ! C'est-à-dire que nous ne pouvons pas avoir en même temps la valeur de la colonne "SELLBEANS" egale a "Yes" et la valeur de la colonne "BEANS" egale a "No". Vérifions qu'aucune ligne ne satisfait à cette double condition absurde avec `filter()` :
 ```{r filter_4, exercise = TRUE}
 filter(BeanSurvey, SELLBEANS=="Yes" & BEANS=="No")
 ```
-In the command above, we separated the two condition with `&`, which is the symbol used in R for 'AND', because we want to retrieve the rows where `SELLBEANS=="Yes"` **AND** `BEANS=="No"`. R did not retrieve any row, which is good. Don't forget that R is case sensitive though. In our data, the value "Yes" is written with an upper case "Y" and a lower case "es", and the value "No" is written with an uppercase "N" and a lowercase "o". It would be very easy to misspell these two values in our command, which would make us reach the same conclusion that there is no inconsistency in our data, but without having tested it properly!
+Dans la commande ci-dessus, nous avons séparé les deux conditions avec `&`, qui est le symbole utilisé dans R pour 'ET', parce que nous voulons récupérer les lignes où `SELLBEANS=="Yes"` **ET** `BEANS=="No"`. R n'a récupéré aucune ligne, ce qui est une bonne chose. N'oubliez pas que R est sensible à la casse. Dans nos données, la valeur "Yes" est écrite avec un "Y" majuscule et un "es" minuscule, et la valeur "No" est écrite avec un "N" majuscule et un "o" minuscule. Il serait très facile de mal orthographier ces deux valeurs dans notre commande, ce qui nous amènerait à la même conclusion qu'il n'y a pas d'incohérence dans nos données, mais sans l'avoir testée correctement !
 
-`filter` can also be useful to explore a specific subset of the population. For example, I saw that the head of household of most households is either a farmer or a fisherman. I am a bit curious about the households who are not in this situation. We can retrieve them using the following command:
+`filter()` peut également être utile pour explorer un sous-ensemble spécifique de la population. Par exemple, j'ai vu que le chef de famille de la plupart des ménages est soit un agriculteur (farmer), soit un pêcheur (fisherman). Je suis un peu curieux de savoir quels sont les ménages qui ne sont pas dans cette situation. Nous pouvons les retrouver en utilisant la commande suivante :
 ```{r filter_5, exercise = TRUE}
 filter(BeanSurvey, !(OCCUHH=="Farmer" | OCCUHH=="Fisherman"))
 ```
-The command above looks a bit complicated, but it is actually quite simple. Let's break it into steps.
+La commande ci-dessus semble un peu compliquée, mais elle est en fait assez simple. Décomposons-la en étapes.
 
-The symbol `|` represents "OR", so the following command would retrieve all the households for which the head of household is a farmer OR a fisherman:
+Le symbole `|` représente "OU", donc la commande suivante récupérerait tous les ménages dont le chef de famille est un agriculteur OU un pêcheur :
 ```{r filter_6, exercise = TRUE}
 filter(BeanSurvey, OCCUHH=="Farmer" | OCCUHH=="Fisherman")
 ```
 
-Brackets are used to group expressions, in order to force R to perform operations in a specific order, exactly as in basic mathematical operations. Encapsulating the whole expression within brackets doesn't change the output of our command:
+Les parenthèses sont utilisées pour regrouper des expressions, afin de forcer R à effectuer des opérations dans un ordre spécifique, exactement comme dans les opérations mathématiques de base. Encapsuler toute l'expression entre parenthèses ne change pas le résultat de notre commande :
 ```{r filter_7, exercise = TRUE}
 filter(BeanSurvey, (OCCUHH=="Farmer" | OCCUHH=="Fisherman"))
 ```
 
-Finally we use the symbol `!` that represents "NOT", to only keep the rows where the head of household is **NOT** either a farmer or a fisherman.
+Enfin, nous utilisons le symbole `!` qui représente "PAS", pour ne garder que les lignes où le chef de famille n'est **PAS** 'un agriculteur OU un pêcheur'.
 ```{r filter_8, exercise = TRUE}
 filter(BeanSurvey, !(OCCUHH=="Farmer" | OCCUHH=="Fisherman"))
 ```
 
-The brackets are important here, because in boolean logic "NOT" takes priority over "OR", so using the expression `!OCCUHH=="Farmer" | OCCUHH=="Fisherman"` we would retrieve the rows where *the head of household is not a farmer, OR the head of household is a fisherman*. This type of priority is similar to the priority of multiplication over addition or subtraction. In maths, the result of the calculation 3 x 2 + 2 is 8. To have the addition 2 + 2 performed before the multiplication 3 x 2, we need to add brackets: 3 x (2 + 2). It is the same with NOT and OR.
+Les parenthèses sont importantes ici, car dans la logique booléenne, "PAS" a priorité sur "OU", donc en utilisant l'expression `!OCCUHH=="Farmer" | OCCUHH=="Fisherman"` nous récupérerions les lignes où *le chef de ménage n'est pas un agriculteur, OU le chef de ménage est un pêcheur*. Ce type de priorité est similaire à la priorité de la multiplication sur l'addition ou la soustraction. En mathématiques, le résultat du calcul 3 x 2 + 2 est 8. Pour que l'addition 2 + 2 soit effectuée avant la multiplication 3 x 2, il faut ajouter des parenthèses : 3 x (2 + 2). C'est la même chose avec PAS et OU.
 
-Also note that we could have retrieved our households in another way, using "&" and "!=" (AND and IS DIFFERENT) instead of "|" and "!" (OR and NOT):
+Notez également que nous aurions pu récupérer nos ménages d'une autre manière, en utilisant "&" et "!=" (ET et EST DIFFERENT DE) au lieu de "|" et " !" (OU et PAS) :
 ```{r filter_9, exercise = TRUE}
 filter(BeanSurvey, OCCUHH!="Farmer" & OCCUHH!="Fisherman")
 ```
-Indeed, the command above is asking R for the rows where
+En effet, la commande ci-dessus demande R pour les lignes où
 
-> the occupation of the head of household IS DIFFERENT from farmer AND the occupation of the head of household IS DIFFERENT from fisherman.
+> la profession du chef de ménage EST DIFFÉRENTE de celle d'agriculteur ET la profession du chef de ménage EST DIFFÉRENTE de celle de pêcheur.
 
-There are often many different ways to get to the same result in R. We believe that the commands we show you in these workbooks are good ones to work efficiently and have a readable code, but if for some reason you want to use different commands, you can do so!
+Il y a souvent plusieurs façons différentes d'arriver au même résultat dans R. Nous pensons que les commandes que nous vous montrons dans ces classeurs sont bonnes pour travailler efficacement et ont un code lisible, mais si pour une raison quelconque vous voulez utiliser des commandes différentes, vous pouvez le faire !
 
 
-### using functions within a condition statement
+### utiliser des fonctions dans une déclaration de condition
 
-In a condition statement, we can also use functions like `max()` or `min()` to help us with the filtering. Let's retrieve the households whose land area of farm is the largest:
+Dans une déclaration de condition, nous pouvons également utiliser des fonctions comme `max()` ou `min()` pour nous aider à filtrer. Récupérons les ménages dont la surface agricole est la plus importante :
 ```{r filter_10, exercise = TRUE}
 filter(BeanSurvey, LANDAREA==max(LANDAREA))
 ```
 
-In the command above, R first calculates the result of `max(LANDAREA)` in the dataframe BeanSurvey, which is 10:
+Dans la commande ci-dessus, R calcule d'abord le résultat de `max(LANDAREA)` dans le tableau de données BeanSurvey, qui est 10 :
 ```{r filter_11, exercise = TRUE}
 max(BeanSurvey$LANDAREA)
 ```
 
-And it then performs the corresponding filtering:
+Et il effectue ensuite le filtrage correspondant :
 ```{r filter_12, exercise = TRUE}
 filter(BeanSurvey, LANDAREA==10)
 ```
 
-As you see, we didn't get one single result here. That's because filter retrieves *all* the rows that satisfy the specified condition, and we have several households whose farm land area is 10 acres.
+Comme vous le voyez, nous n'avons pas obtenu un seul résultat ici. C'est parce que le filtre récupère *toutes* les lignes qui remplissent la condition spécifiée, et nous avons plusieurs ménages dont la surface agricole est de 10 acres (cliquez sur la fleche noire pour acceder a la colonne `LANDAREA` dans le tableau des resultats).
 
 
 
-**Question: write the command that would show the household that has the highest quantity of beans planted in long rain season. Hint: there is a missing value in the column**
+**Question : écrivez la commande qui indiquerait le ménage qui a la plus grande quantité de haricots plantés pendant la longue saison des pluies. Attention : il manque une valeur dans la colonne**
 ```{r filter_13, exercise=TRUE}
 
 ```
 
 ```{r filter_13-solution}
 filter(BeanSurvey, BEANSPLANTED_LR==max(BEANSPLANTED_LR, na.rm=TRUE))
-# if we omit the argument 'na.rm=TRUE' in the function max(), we end up with no household.
-# that's because the missing value makes max(BEANSPLANTED_LR) be unknown/missing as well.
+# si nous omettons l'argument 'na.rm=TRUE' dans la fonction max(), nous nous retrouvons sans ménage.
+# car la valeur manquante fait que max(BEANSPLANTED_LR) est également inconnu/manquant.
 ```
 
 
@@ -266,34 +265,34 @@ filter(BeanSurvey, BEANSPLANTED_LR==max(BEANSPLANTED_LR, na.rm=TRUE))
 
 ## arrange()
 
-Let's relax a little and have a brief look at the `arrange()` function, which is used to order the rows of a data frame according to the values of some columns. The syntax is very similar to that of `select()`, as after we enter the dataset, we simply indicate the column(s) by which we want to order the dataset. Let's order our dataset by land area of farm:
+Détendons-nous un peu et jetons un bref coup d'oeil à la fonction `arrange()`, qui est utilisée pour ordonner les lignes d'un tableau de données en fonction des valeurs de certaines colonnes. La syntaxe est très similaire à celle de la fonction `select()`, car après avoir indique le tableau de données, nous indiquons simplement la ou les colonnes par lesquelles nous voulons ordonner le tableau de données. Ordonnons notre tableau de données par superficie de l'exploitation :
 
 ```{r arrange_1, exercise = TRUE}
 arrange(BeanSurvey, LANDAREA)
 ```
 
-Depending on the size and resolution of your screen, you may need to click the little arrow at the top right to reach the column `LANDAREA` and check that the data has indeed been ordered by that variable. You will see that the households with smallest land area are at the top. That's because by default, `arrange()` orders your dataset by increasing values of the indicated column. If we want to order from highest to lowest value instead, we need to place our column inside the function `desc()` - "desc" for *descending*
+Selon la taille et la résolution de votre écran, vous devrez peut-être cliquer sur la petite flèche en haut à droite pour atteindre la colonne "LANDAREA" et vérifier que les données ont bien été ordonnées par cette variable. Vous verrez que les ménages ayant la plus petite surface de terrain se trouvent en haut. C'est parce que par défaut, `arrange()` ordonne votre tableau de données en augmentant les valeurs de la colonne indiquée. Si nous voulons plutôt ordonner de la valeur la plus élevée à la plus basse, nous devons placer notre colonne à l'intérieur de la fonction `desc()` - "desc" pour *descending*.
 
 ```{r arrange_2, exercise = TRUE}
 arrange(BeanSurvey, desc(LANDAREA))
 ```
 
-Note that we can order a dataset by multiple columns and these columns don't necessary have to be numeric. Let's order our dataset by age group, gender of the head of household, and decreasing order of the number of children respectively:
+Notez que nous pouvons ordonner un tableau de données par plusieurs colonnes et que ces colonnes n'ont pas besoin d'être numériques. Ordonnons notre tableau de données par groupe d'âge, sexe du chef de ménage et par ordre décroissant du nombre d'enfants respectivement :
 ```{r arrange_3, exercise = TRUE}
 arrange(BeanSurvey, AGEHH, GENDERHH, desc(CHILDREN))
 ```
-The households where the head of household are between 20 and 30 years old are now at the top, the one with a female head of household being first. And for the male headed households, the higher the number of children, the higher they place in the table.
+Les ménages dont le chef de famille a entre 20 et 30 ans sont désormais tout en haut, celui dont le chef de famille est une femme étant le premier. Et pour les ménages dirigés par un homme, plus le nombre d'enfants est élevé, plus ils se situent en haut dans le tableau.
 
 
-As this section is a bit shorter than the other ones, let me briefly introduce you to the function `slice()`, which is quite useful to quickly retrieve specific rows by position. The syntax is similar to all the core functions of dplyr. The data is the first argument, and then we indicate the rows that we want. Since `1:5` is a shorthand for `c(1,2,3,4,5)`, we can retrieve the first 5 rows of our dataset with the following command:
+Comme cette section est un peu plus courte que les autres, permettez-moi de vous présenter brièvement la fonction `slice()`, qui est très utile pour retrouver rapidement des lignes spécifiques par position. La syntaxe est similaire à toutes les fonctions de base de dplyr. Les données sont le premier argument, et ensuite nous indiquons les lignes que nous voulons. Puisque `1:5` est une abréviation de `c(1,2,3,4,5)`, nous pouvons récupérer les 5 premières lignes de notre tableau de données avec la commande suivante :
 ```{r arrange_slice, exercise = TRUE}
 slice(BeanSurvey, 1:5)
 ```
-`slice()` is often useful after `arrange()`, to retrieve the few rows that have the highest or lowest values for the column used to order the rows. Combining manipulations like that is what we'll learn in the second part of the workbook. Stay tuned! 
+`slice()` est souvent utile après `arrange()`, pour récupérer les quelques lignes qui ont les valeurs les plus élevées ou les plus basses pour la colonne utilisée pour ordonner les lignes. Combinant des manipulations de ce type est ce que nous apprendrons dans la deuxième partie du manuel. 
 
 
 
-**Question: Use the function `arrange()` to order the rows of the BeanSurvey dataset by decreasing order of the number of adults in the household**
+**Question : Utilisez la fonction `arrange()` pour ordonner les lignes du tableau de données BeanSurvey par ordre décroissant du nombre d'adultes dans le ménage**
 ```{r arrange_4, exercise = TRUE}
 
 ```
@@ -305,67 +304,68 @@ arrange(BeanSurvey, desc(ADULTS))
 
 ## summarise()
 
-The next function we will learn about is `summarise()`, which calculates summaries of variables within our dataset. As with all the other dplyr functions, the first argument is the name of our data. The second argument provides a summary function used on a variable from the data.
+La prochaine fonction que nous allons découvrir est "summarise()`, qui calcule des résumés de variables dans notre tableau de données. Comme pour toutes les autres fonctions dplyr, le premier argument est le nom de nos données. Le deuxième argument fournit une fonction de résumé utilisée sur une variable des données.
 
 
-For example, to know the total area of all the household farms in the BeanSurvey data frame, we can use the summary function `sum()`:
+Par exemple, pour connaître la superficie totale de toutes les exploitations agricoles des ménages dans le tableau des données BeanSurvey, nous pouvons utiliser la fonction de résumé `sum()` :
 ```{r summarize_1, exercise = TRUE}
 summarise(BeanSurvey, sum(LANDAREA))
 ```
 
-This seems equivalent to doing:
+Cela semble équivalent à faire:
 ```{r summarize_1b, exercise = TRUE}
 sum(BeanSurvey$LANDAREA)
 ```
 
-Except that with `summarise()`, the output is a data frame, which is extremely useful if we want to use our summaries later, or combine our command with other manipulations. We should also get used to give a proper name to the output column containing our summary statistics to make it easy to reuse it in later steps. To do so, we place the name we would like for our summary followed by a single equals sign just in front of our calculation.
+Sauf qu'avec `summarise()`, le résultat est un tableau de données, ce qui est extrêmement utile si nous voulons utiliser nos résumés plus tard, ou combiner notre commande avec d'autres manipulations. Nous devrions également nous habituer à donner un nom aux colonnes de résultats contenant nos resumes statistiques afin de pouvoir les réutiliser facilement dans les étapes ultérieures. Pour ce faire, nous plaçons le nom que nous souhaitons pour notre résumé suivi d'un seul signe égale juste devant notre calcul.
 ```{r summarize_2, exercise = TRUE}
 summarise(BeanSurvey, totalArea=sum(LANDAREA))
 ```
-Note that we use the single equals sign, not the double equals sign, because we are **assigning** our summary statistics `sum(LANDAREA)` to a column called `totalArea`.
+Notez que nous utilisons le simple signe d'égale, et non le double signe d'égale, car nous **attribuons** notre resume statistique `sum(LANDAREA)` à une colonne appelée `totalArea`.
 
 
-**Remark**: You may sometimes see people use summari**z**e() instead of summari**s**e() like I do in the video. They are identical. The people who made dplyr are from New Zealand, where they use the British spelling summari**s**e(). But they are very nice people and decided to allow for the American spelling as well.
+**Remarque** : Vous pouvez parfois voir des gens utiliser summari**z**e() au lieu de summari**s**e() comme je le fais dans la vidéo. Ces deux fonctions sont identiques. Les personnes qui ont developpe  dplyr viennent de Nouvelle-Zélande, où ils utilisent l'orthographe britannique summari**s**e(). Mais ils sont très gentils et ont décidé d'autoriser aussi l'orthographe américaine.
 
 
 
-We can ask R to give us more than one summary, by listing the calculations we want to perform, separated with commas.
+Nous pouvons demander à R de nous donner plus d'un résumé statistique, en énumérant les calculs que nous voulons effectuer, séparés par des virgules.
 
 ```{r summarize_3, exercise = TRUE}
 summarise(BeanSurvey, households=n(), mean_area=mean(LANDAREA), sd_area=sd(LANDAREA))
 ```
-Here we used the functions `mean()` and `sd()` to calculate the mean, and standard deviation of the column LANDAREA. We also used the function `n()`, which simply counts the number of rows - that is, here, the number of households. Note that with `n()` we don’t put a name of variable inside the brackets, since the number of rows does not depend on the variables.
+Ici, nous avons utilisé les fonctions `mean()` et `sd()` pour calculer la moyenne et l'écart-type de la colonne LANDAREA. Nous avons également utilisé la fonction `n()`, qui compte simplement le nombre de lignes - c'est-à-dire, ici, le nombre de ménages. Notez qu'avec `n()`, nous ne mettons pas de nom de variable entre parenthèses, puisque le nombre de lignes ne dépend pas des variables.
 
-So far, we've only used numeric variables in our calculations, but we can also use factors or categorical variables. For example, it is often useful to count the number of occurrences of a certain value using conditions, a bit like we did in the `filter` section. Let's try to count the number of female headed and male headed households:
+Jusqu'à présent, nous n'avons utilisé que des variables numériques dans nos calculs, mais nous pouvons également utiliser des facteurs ou des variables catégorielles. Par exemple, il est souvent utile de compter le nombre d'occurrences d'une certaine valeur en utilisant des conditions, un peu comme nous l'avons fait dans la section "filter()". Essayons de compter le nombre de ménages dirigés par une femme et le nombre de ménages dirigés par un homme :
 
 ```{r summarize_4, exercise = TRUE}
 summarise(BeanSurvey, female_HH=sum(GENDERHH=="female"), male_HH= sum(GENDERHH=="male"))
 ```
 
-Argh, we obtain the value 'NA'! We've discussed the issue of R not being able to calculate some summary statistics like a mean, sum or maximum when there's a missing data in the variable, unless we add the argument `na.rm=TRUE`. We've not discussed how to check the presence of missing values in the first place though. One good way to do that would be to use `filter()` together with the base-R function `is.na()`.
+Argh, on obtient la valeur "NA" ! Nous avons discuté du fait que R ne peut pas calculer certains resumes statistiques comme une moyenne, une somme ou un maximum lorsqu'il manque une donnée dans la variable, à moins d'ajouter l'argument "na.rm=TRUE". Nous n'avons pas discuté de la façon de vérifier la présence de valeurs manquantes en premier lieu par contre. Une bonne façon de faire ca est d'utiliser `filter()` avec la fonction disponible nativement dans R `is.na()`.
 
-Let's see what `is.na()` does when we apply it to our gender variable:
+Voyons ce que fait la fonction `is.na()` lorsque nous l'appliquons à notre variable de genre :
 ```{r summarize_4b, exercise = TRUE}
 is.na(BeanSurvey$GENDERHH)
 ```
-It gives us a vector that take the value TRUE when GENDERHH is missing and false otherwise.
+Il nous donne un vecteur qui prend la valeur TRUE quand le SEXE est absent et FALSE sinon.
 
 
-We can then use it inside `filter()` to keep only the rows where `is.na(GENDERHH)` is equal to `TRUE`:
+Nous pouvons ensuite l'utiliser dans `filter()` pour ne garder que les lignes où `is.na(GENDERHHH)` est égal à `TRUE` :
 ```{r summarize_4c, exercise = TRUE}
 filter(BeanSurvey, is.na(GENDERHH)==TRUE)
 ```
-Here we go, this household in Kimbugu was the one where the gender of the head of household was missing!
-Note that we didn't place any quote around TRUE, which may be confusing for some of you, as we told you a few times that you should always have quote around strings of text that are not existing objects or variables within R. Well that's because within R, TRUE and FALSE are recognized as values rather than strings of text. Don't worry, we'll talk more about it a bit later.
+Et voilà! Ce menage de Kimbugu était celui où le sexe du chef de famille manquait !
+Notez que nous n'avons pas placé de guillemets autour du TRUE, ce qui peut être déroutant pour certains d'entre vous, car nous vous avons dit à plusieurs reprises que vous devriez toujours avoir des guillemets autour des chaînes de texte qui ne sont pas des objets ou des variables existants dans R. Eh bien c'est parce que dans R, `TRUE` et `FALSE` sont reconnus comme des valeurs plutôt que des chaînes de texte. Ne vous inquiétez pas, nous en reparlerons un peu plus tard.
 
 
-So now that we confirmed that there is a missing value in the variable GENDERHH, we can tell R to skip it using the argument `na.rm=TRUE` within the `sum()` function:
+Maintenant que nous avons confirmé qu'il y a une valeur manquante dans la variable GENDERHH, nous pouvons dire à R de l'ignorer en utilisant l'argument `na.rm=TRUE` dans la fonction `sum()` :
+
 ```{r summarize_6, exercise = TRUE}
 summarise(BeanSurvey, female_HH=sum(GENDERHH=="female", na.rm=TRUE), male_HH= sum(GENDERHH=="male", na.rm=TRUE))
 ```
-We have our summaries!
+Nous avons nos résumés statistiques !
 
-**Question: Use summarise to calculate the number of households growing beans, maize and coffee. Give sensible names to these numbers**
+**Question : Utilisez summarise() pour calculer le nombre de ménages qui cultivent des haricots, du maïs et du café. Donnez des noms sensés a vos colonnes de resultat**
 ```{r summarize_7, exercise = TRUE}
 
 ```
@@ -376,75 +376,75 @@ summarise(BeanSurvey, grow_beans = sum(BEANS=="Yes"), grow_maize = sum(MAIZE=="Y
 
 ```
 
-`summarise()` is especially useful when it is used in combination with the function `group_by()`, as the latter allow us to calculate summaries for ***groups*** of observations rather than for the whole dataset. We will learn how to do that a bit later in the second part of this workbook. 
+`summarise()` est particulièrement utile lorsqu'elle est utilisée en combinaison avec la fonction `group_by()`, car cette dernière nous permet de calculer des résumés pour des ***groupes*** d'observations plutôt que pour le tableau de données tout entier. Nous apprendrons comment faire cela un peu plus tard dans la deuxième partie de ce manuel. 
 
 
 ## mutate()
 
-The next function to look at is `mutate()`. It is used to modify existing columns or create new columns. The syntax is as follows: We indicate our dataset first, as always, and then we provide the calculations that we want to perform for our new columns.
+La prochaine fonction à examiner est `mutate()`. Elle est utilisée pour modifier des colonnes existantes ou créer de nouvelles colonnes. La syntaxe est la suivante : Nous indiquons d'abord notre tableau de données, comme toujours, puis nous fournissons les calculs que nous voulons effectuer pour nos nouvelles colonnes.
 
-For example, it would probably be useful to create a new column representing the size of each household, by adding the number of children and the number of adults:
+Par exemple, il serait probablement utile de créer une nouvelle colonne représentant la taille de chaque ménage, en ajoutant le nombre d'enfants et le nombre d'adultes :
 ```{r mutate_1, exercise = TRUE}
 mutate(BeanSurvey, hh_size = ADULTS + CHILDREN)
 ```
 
-Like for the summarise function, we could omit naming our new column, but then R would just use the calculation itself as the column name. That's what happened in the video. We don't always set a good example!
+Comme pour la fonction de `summarise()` , nous pourrions omettre de nommer notre nouvelle colonne, mais alors R utiliserait simplement le calcul lui-même comme nom de colonne. C'est ce qui s'est passé dans la vidéo. Nous ne donnons pas toujours le bon exemple !
 
-You can see that the new column `hh_size` appears at the very end of the dataset (use the little black arrow at the top right to reach it). We could use `select()` to move it more towards the beginning of our columns if we knew how to combine multiple manipulations. We will see how to do that shortly.
+Vous pouvez voir que la nouvelle colonne "hh_size" apparaît à la toute fin du tableau de données (utilisez la petite flèche noire en haut à droite pour l'atteindre). Nous pourrions utiliser `select()` pour la déplacer davantage vers le début de nos colonnes si nous savions comment combiner plusieurs manipulations. Nous verrons bientôt comment faire cela.
 
 
-Similarly to `summarise()`, you can use functions like `sum()`, `min()`, `max()` , or calculations over conditions to help you create your new columns. Let's create a variable that tells us whether or not a household has children:
+Comme pour `summarise()`, vous pouvez utiliser des fonctions comme `sum()`, `min()`, `max()`, ou des calculs sur les conditions pour vous aider à créer vos nouvelles colonnes. Créons une variable qui nous indique si un ménage a des enfants ou non :
 
 ```{r mutate_2, exercise = TRUE}
 mutate(BeanSurvey, has_children = CHILDREN > 0)
 ```
-In the command above, when the column CHILDREN is greater than 0, the expression `CHILDREN > 0` returns `TRUE`. Otherwise, it returns `FALSE`. If you look just below the name of our new variable (click the black arrow to get to the right end of the dataset), you will see a set of weird grey characters. It indicates the type of the variable. Here the set of characters is `<lgl>` and "lgl" is a shorthand for 'logical'. That's because we just created a variable of type 'logical'. The only values that a logical variable can take are 'TRUE' and 'FALSE', which are special values used by R to determine if a condition is true or false. We had already created a logical variable a few commands ago when we checked if there was any missing value in the variable GENDERHH using `is.na(GENDERHH)`, though we did not save it. With mutate, we keep it in our dataset!
+Dans la commande ci-dessus, lorsque la colonne CHILDREN est supérieure à 0, l'expression "CHILDREN > 0" renvoie "TRUE". Sinon, elle renvoie `FALSE`. Si vous regardez juste en dessous du nom de notre nouvelle variable (cliquez sur la flèche noire pour vous rendre à l'extrémité droite du tableau de données), vous verrez un ensemble de caractères gris bizarres. Il indique le type de la variable. Ici, il est ecrit "<lgl>" et "lgl" est une abréviation pour "logical" (logique). C'est parce que nous venons de créer une variable de type "logique". Les seules valeurs qu'une variable logique peut prendre sont "TRUE" et "FALSE", qui sont des valeurs spéciales utilisées par R pour déterminer si une condition est vraie ou fausse. Nous avions déjà créé une variable logique il y a quelques commandes lorsque nous avons vérifié s'il y avait une valeur manquante dans la variable GENDERHH en utilisant `is.na(GENDERHH)`, bien que nous ne l'ayons pas sauvegardée. Avec la commande "mutate()", nous la gardons dans notre tableau de données !
 
-Note that you have a similar set of grey characters below every column name, and `<chr>`, `<int>`, `<dbl>` indicate that the corresponding variables are of type 'character', 'integer' and 'double' respectively, the two latter being different types of numeric variables. The operations and functions that you can apply to a variable depends on their type, so this information is very useful, especially to understand why you get errors or things don't go as expected. For example, whenever you try to make a calculation with a character variable, R will give you an error.
+Notez que vous disposez d'un ensemble similaire de caractères gris sous chaque nom de colonne, et que `<chr>`, `<int>`, `<dbl>` indiquent que les variables correspondantes sont respectivement de type 'caractère', 'entier' et 'double', ces deux dernières étant des types différents de variables numériques. Les opérations et les fonctions que vous pouvez appliquer à une variable dépendent de leur type. Ces informations sont donc très utiles, notamment pour comprendre pourquoi vous obtenez des erreurs ou que les choses ne se passent pas comme prévu. Par exemple, chaque fois que vous essayez de faire un calcul avec une variable de type caractère, R vous donnera une erreur.
 
 
-### creating categorical variables using ifelse()
+### créer des variables catégorielles en utilisant ifelse()
 
-So far, we've created a numeric column (`hh_size` was of type integer) and a column of type logical. Creating a proper categorical variable is a bit less straightforward. Let's see one nice way to do so, using the base-R function `ifelse()`, which checks every row for a condition and returns a value that depends of this condition. `ifelse()` takes three arguments. A condition to verify, a value that is returned if the condition is verified, and a value returned if the condition is **not** verified. So the syntax is:
+Jusqu'à présent, nous avons créé une colonne numérique (`hh_size` était de type entier) et une colonne de type logique. La création d'une variable catégorielle est un peu moins simple. Voyons une conne façon de le faire, en utilisant la fonction R native `ifelse()`, qui vérifie chaque ligne pour une condition et retourne une valeur qui dépend de cette condition. `ifelse()` prend trois arguments. Une condition à vérifier, une valeur qui est retournée si la condition est vérifiée, et une valeur retournée si la condition n'est **pas** vérifiée. La syntaxe est donc :
 
-ifelse(`CONDITION`, `VALUE IF CONDITION IS TRUE`, `VALUE IF CONDITION IS FALSE`)
+ifelse(`CONDITION`, `VALEUR SI LA CONDITION EST VRAIE`, `VALEUR SI LA CONDITION EST FAUSSE`)
 
-Let's try with a simple example. We'll create a simple column hh_occupation, that takes only two values: "Farmer" or "Other". As a reminder, here are the values that the column OCCUH takes in our dataset:
+Essayons avec un exemple simple. Nous allons créer une simple colonne hh_occupation, qui ne prend que deux valeurs : "Agriculteur" ou "Autre". Pour rappel, voici les valeurs que la colonne OCCUH prend dans notre jeu de données :
 ```{r mutate_2c, exercise = TRUE}
 BeanSurvey$OCCUHH
 ```
 
-To generate a variable that takes the value "Farmer" if the occupation of the head of household is farmer, and "other" otherwise, we can use the following command:
+Pour générer une variable qui prend la valeur "Agriculteur" si l'occupation du chef de ménage est agriculteur, et "autre" sinon, nous pouvons utiliser la commande suivante :
 
 ```{r mutate_2d, exercise = TRUE}
-ifelse(BeanSurvey$OCCUHH == "Farmer", "Farmer", "Other")
+ifelse(BeanSurvey$OCCUHH == "Farmer", "Agriculteur", "Autre")
 ```
 
-And we can do the same, but inside the function mutate, to add this variable to our dataset. We need to remove "BeanSurvey$" from the command though, since the data is already indicated as the first argument of mutate.
+Et nous pouvons faire la même chose, mais à l'intérieur de la fonction mutate(), pour ajouter cette variable à notre tableau de données. Nous devons cependant supprimer "BeanSurvey$" de la commande, puisque les données sont déjà indiquées comme premier argument de la mutation.
 
 ```{r mutate_2e, exercise = TRUE}
-mutate(BeanSurvey, hh_occupation = ifelse(OCCUHH== "Farmer", "Farmer", "Other"))
+mutate(BeanSurvey, hh_occupation = ifelse(OCCUHH== "Farmer", "Agriculteur", "Autre"))
 ```
 
 
-### creating multiple columns and replacing columns
+### créer plusieurs colonnes et remplacer des colonnes
 
-Of course, we can create multiple columns at once. We simply need to separate the associated calculations with commas.
+Bien sûr, nous pouvons créer plusieurs colonnes à la fois. Il suffit de séparer les calculs associés par des virgules.
 
 ```{r mutate_3, exercise = TRUE}
-mutate(BeanSurvey, hh_size = ADULTS + CHILDREN, has_children = CHILDREN > 0, hh_occupation = ifelse(OCCUHH== "Farmer", "Farmer", "Other"))
+mutate(BeanSurvey, hh_size = ADULTS + CHILDREN, has_children = CHILDREN > 0, hh_occupation = ifelse(OCCUHH== "Farmer", "Agriculteur", "Autre"))
 ```
 
 
-Also if you remember, I said that mutate can also "modify" a column. You achieve that by using an already existing column name as the name of your new column. Here we replace the variable `CHILDREN` rather than creating the variable `has_children`:
+Et si vous vous souvenez bien, j'ai dit que `mutate()` peut aussi "modifier" une colonne. Vous y parvenez en utilisant le nom d'une colonne déjà existante comme nom de votre nouvelle colonne. Ici, nous remplaçons la variable `CHILDREN` plutôt que de créer la variable `has_children` :
 
 ```{r mutate_4, exercise = TRUE}
 mutate(BeanSurvey, CHILDREN = CHILDREN > 0)
 ```
-You need to be careful when modifying existing columns though. In general, as it's not too much of a pain to have lots of columns - since we have the function `select()` to pick the ones we want - we often prefer to create new columns rather than modifying existing ones.
+Vous devez cependant être prudent lorsque vous modifiez des colonnes existantes. En général, comme il n'est pas trop ennuyeux d'avoir beaucoup de colonnes - puisque nous avons la fonction `select()` pour choisir celles que nous voulons - nous préférons souvent créer de nouvelles colonnes plutôt que de modifier celles qui existent déjà.
 
 
-**Question: create a column that measures the yield of beans per acre of each household in long rain season. Give it a sensible name**
+**Question : créer une colonne qui mesure le rendement de haricots par acre de chaque ménage pendant la longue saison des pluies. Donnez-lui un nom sensé**
 
 ```{r mutate_5, exercise = TRUE}
 
@@ -455,50 +455,51 @@ mutate(BeanSurvey, yield_per_acre_LR = BEANSHARVESTED_LR/LANDAREA)
 
 ```
 
-Such new column will be useful for analysing our dataset, but we still don't know how to associate the result of our manipulations with each other and other operations. Time for the second part of the dplyr session!
+Cette nouvelle colonne sera utile pour analyser notre tableau de données, mais nous ne savons toujours pas comment associer les résultats de nos manipulations entre elles et avec d'autres opérations. Il est temps de passer a la deuxième partie de la session dplyr !
 
-## Appendix: 'BeanSurvey' dataset 
+## Annexe : données "BeanSurvey 
 
-The data we are using in this session is an extract of a survey conducted in Uganda from farmers identified as growing beans.
+Les données que nous utilisons dans cette session sont un extrait d'une enquête menée en Ouganda auprès d'agriculteurs identifiés comme cultivant des haricots.
 
-The dataset contains an extract of 50 responses to 23 of the survey questions, and has been imported to R as a data frame called `BeanSurvey`.
+Le tableau de données contient un extrait de 50 réponses à 23 des questions de l'enquête, et a été importé dans R en tant que base de données appelée "BeanSurvey".
 
-A summary of the columns in the dataset is below.
+Un résumé des colonnes du tableau de données est présenté ci-dessous.
 
 ```{r, echo=FALSE,message=FALSE,warning=FALSE}
 
 
 data.frame(Column=colnames(BeanSurvey),
-           Description=c("Farmer ID","Village name","Household composition","Gender of Household Head","Age of Household Head",
-                         "Occupation of Household Head","Number of Adults within the household","Number of Children (<18) within the household","Do they grow matoke?",
-                         "Do they grow maize?","Do they grow beans?","Do they grow banana?","Do they grow cassava?",
-                         "Do they grow coffee?","Land area of farm (acres)","Labor usage","Intercrops with beans",
-                         "Household decision responsibility","Do they grow beans for sale?","Quantity of beans planted in long rain season",
-                         "Quantity of beans planted in short rain season","Quantity of beans harvested in long rain season"
-                         ,"Quantity of beans harvested in short rain season")) %>% kable()
+           Description=c("Identifiant de l'agriculteur", "Nom du village", "Composition du ménage", "Sexe du chef de ménage", "Âge du chef de ménage",
+                         "Occupation du chef de ménage", "Nombre d'adultes dans le ménage", "Nombre d'enfants (<18) au sein du ménage", "Cultivent-ils du matoke?",
+                         "Cultivent-ils du maïs?", "Cultivent-ils des haricots?", "Cultivent-ils des bananes?", "Cultivent-ils du manioc?",
+                         "Cultivent-ils du café?", "Superficie de la ferme (acres)", "Utilisation de la main-d'oeuvre", "Cultures intercalaires avec des haricots",
+                         "Responsabilité de décision des ménages", "Cultivent-ils des haricots pour la vente?", "Quantité de haricots plantés pendant la longue saison des pluies",
+                         "Quantité de haricots plantés pendant la courte saison des pluies", "Quantité de haricots récoltés pendant la longue saison des pluies"
+                         , "Quantité de haricots récoltés pendant la courte saison des pluies")) %>% kable()
 
 ```
 
 
-Spend some time looking through the exploring the full dataset embedded below, to familiarise yourself with the columns and the type of data stored within each column. You may need to refer back to this data at times during this tutorial. Remember that R is case sensitive, so you will always have to refer to the variables in this dataset exactly as they are written in the data. There is a column in this data called "GENDERHH" but there is no column in this data called "GenderHH".
+Prenez le temps de parcourir le tableau des données ci-dessous pour vous familiariser avec les colonnes et le type de données stockées dans chacune d'elles. Vous aurez peut-être besoin de vous référer à ces données à certains moments au cours de ce tutoriel. N'oubliez pas que R est sensible à la casse, vous devrez donc toujours vous référer aux variables de ce tableau de données exactement comme elles sont écrites dans les données. Il y a une colonne dans ces données appelée "GENDERHH" mais il n'y a pas de colonne dans ces données appelée "GenderHH".
 
 ```{r,echo=FALSE}
 DT::datatable(BeanSurvey)
 ```
 
-(You can use the arrow keys on your keyboard to scroll right in case the data table does not fit entirely on your screen)
+(Vous pouvez utiliser les touches fléchées de votre clavier pour faire défiler vers la droite au cas où le tableau de données ne tiendrait pas entièrement sur votre écran)
 
 
-## Appendix: Useful reference links  
+## Annexe : Liens de référence utiles  
 
 
-The official dplyr documentation: <a href="https://dplyr.tidyverse.org/" target="_blank">https://dplyr.tidyverse.org/</a> 
+La documentation officielle de dplyr (en anglais): <a href="https://dplyr.tidyverse.org/" target="_blank">https://dplyr.tidyverse.org/</a> 
 
-dplyr CheatSheet:<a href="https://github.com/rstudio/cheatsheets/blob/master/data-transformation.pdf" target="_blank">https://github.com/rstudio/cheatsheets/blob/master/data-transformation.pdf   </a>  
+Bon chapitre sur l'utilisation de dplyr: <a href="https://juba.github.io/tidyverse/10-dplyr.html" target="_blank">https://juba.github.io/tidyverse/10-dplyr.html</a> 
+ 
 
-Data Manipulation Tools - Rstudio video:
+
+Aide memoire dplyr "CheatSheet" (en anglais):<a href="https://github.com/rstudio/cheatsheets/blob/master/data-transformation.pdf" target="_blank">https://github.com/rstudio/cheatsheets/blob/master/data-transformation.pdf   </a>  
+
+"Data Manipulation Tools" - video youtube par RStudio (en anglais):
 <a href="https://www.youtube.com/watch?v=Zc_ufg4uW4U" target="_blank">dplyr -- Pt 3 Intro to the Grammar of Data Manipulation with R   </a> 
-
-Some documentation on subsetting r-objects using base-R: <a href="https://bookdown.org/rdpeng/rprogdatascience/subsetting-r-objects.html" target="_blank">https://bookdown.org/rdpeng/rprogdatascience/subsetting-r-objects.html </a> 
-
 

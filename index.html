@@ -13,7 +13,7 @@
 <meta name="progressive" content="true" />
 <meta name="allow-skip" content="true" />
 
-<title>Manipulating Data using dplyr: part 1</title>
+<title>Manipulation des données à l’aide de dplyr : partie 1</title>
 
 
 <!-- highlightjs -->
@@ -118,88 +118,88 @@ $(document).ready(function () {
 
 <div id="section-overview" class="section level2">
 <h2>Overview</h2>
-<p>In this session, we will learn how to manipulate data and in particular, to select/modify/create columns, filter/order rows and calculate summaries. Knowing how to manipulate data is an essential skill that anyone working with data needs to acquire. We will focus on using the package <code>dplyr</code>, which is part of tidyverse, like ggplot2, and is probably the most commonly used package when it comes to this sort of data manipulation. I’m saying this <em>sort of data manipulation</em>, because we are not going to talk about more advanced manipulations like merging datasets or going from wide to long format. We will discuss these later, during the last session of the course.</p>
-<p>This session is split into two parts, and you’ll have a series of exercises and questions along the way and at the end.</p>
+<p>Au cours de cette session, nous apprendrons à manipuler les données et, en particulier, à sélectionner/modifier/créer des colonnes, à filtrer/ordonner des lignes et à calculer des résumés statistiques. Savoir manipuler des données est une compétence essentielle que toute personne travaillant avec des données doit acquérir. Nous nous concentrerons sur l’utilisation du package <code>dplyr</code>, qui fait partie de tidyverse, comme ggplot2, et qui est probablement le package le plus utilisé pour ce type de manipulation de données. Je dis ce <em>type de manipulation de données</em>, parce que nous n’allons pas parler de manipulations plus avancées comme la fusion de differents jeux de données ou le passage du format large au format long. Nous en parlerons plus tard, lors de la dernière session du cours.</p>
+<p>Cette session est divisée en deux parties, et vous aurez une série d’exercices et de questions en cours de route et à la fin.</p>
 <ol style="list-style-type: decimal">
-<li>In the first part - this workbook - we will mainly focus on learning how to use 5 of the 6 core functions of the package dplyr. These functions will help you perform all the data manipulations mentioned in the first sentence, that is:
+<li>Dans la première partie - ce tutoriel - nous nous concentrerons principalement sur l’apprentissage de 5 des 6 fonctions de base du package dplyr. Ces fonctions vous aideront à effectuer toutes les manipulations de données mentionnées dans la première phrase, c’est-à-dire :
 <ul>
-<li>select columns - with <code>select()</code></li>
-<li>filter rows - with <code>filter()</code></li>
-<li>reorder rows - with <code>arrange()</code></li>
-<li>calculate summaries - with <code>summarise()</code></li>
-<li>create/modify columns - with <code>mutate()</code></li>
+<li>sélectionner des colonnes - avec <code>select()</code></li>
+<li>selectionner des lignes - avec <code>filter()</code></li>
+<li>réordonner les lignes - avec <code>arrange()</code></li>
+<li>calculer des résumés statistiques - avec <code>summarise()</code></li>
+<li>créer/modifier des colonnes - avec <code>mutate()</code></li>
 </ul></li>
-<li>In the second part, we will learn how to efficiently combine all these functions and a couple of new ones, to perform all the complex sequences of manipulations that you will need in your work. In particular, we will learn to
+<li>Dans la deuxième partie, nous apprendrons à combiner efficacement toutes ces fonctions et quelques nouvelles, pour effectuer toutes les séquences complexes de manipulations dont vous aurez besoin dans votre travail. En particulier, nous apprendrons à
 <ul>
-<li>perform a sequence of manipulation by saving and reusing the output of functions</li>
-<li>use the function <code>group_by()</code> which will allow manipulations like summaries or filters by groups of observations</li>
-<li>use the pipe <code>%&gt;%</code>, an operator similar to the <code>+</code> in ggplot, that makes it very easy to perform cascades of manipulations on a data frame</li>
+<li>effectuer une séquence de manipulation en sauvegardant et en réutilisant le résultat des fonctions</li>
+<li>utiliser la fonction <code>group_by()</code> qui permettra de faire des manipulations par groupes d’observations</li>
+<li>utiliser l’operateur <code>%&gt;%</code>, un opérateur similaire au <code>+</code> dans ggplot, qui permet d’effectuer très facilement un ensemble de manipulations sur un tableau de données</li>
 </ul></li>
 </ol>
-<p>Let’s start with a video where I give you more information about data manipulation, the package dplyr and its core functions.</p>
+<p>Commençons par une vidéo où je vous donne plus d’informations sur la manipulation des données, le package dplyr et ses fonctions de base.</p>
 <p><img src="https://youtu.be/koj23uKL45I" /></p>
-<div id="section-loading-dplyr" class="section level3">
-<h3>loading dplyr</h3>
-<p>Like ggplot, dplyr is an additional package that needs to be installed and then loaded. We haven’t learnt how to properly do that yet, but in this workbook dplyr is already pre-loaded, so we’re good to go and learn about the core functions of dplyr!</p>
+<div id="section-chargement-de-dplyr" class="section level3">
+<h3>chargement de dplyr</h3>
+<p>Comme ggplot, dplyr est une librairie supplémentaire qui doit être installée puis chargée. Nous n’avons pas encore appris à faire ca, mais dans ce manuel, dplyr est déjà préchargé, nous sommes donc prêts à aller découvrir les fonctions principales de dplyr !</p>
 </div>
-<div id="section-the-dataset" class="section level3">
-<h3>the dataset</h3>
-We will do so using a slightly modified version of the dataset <code>BeanSurvey</code> that you already explored in the previous workbook. It is already loaded and so you may remember that you can have a quick look at it by simply typing its name:
+<div id="section-les-données" class="section level3">
+<h3>les données</h3>
+Nous utiliserons pour ce tutoriel une version légèrement modifiée du jeu de données “BeanSurvey” que vous avez déjà exploré dans le précédent tutoriel. Il est déjà chargé et l’on peut y jeter un coup d’œil rapide en tapant simplement le nom du tableau de donnees :
 <div class="tutorial-exercise" data-label="dataset" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>BeanSurvey</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-<p>Have a look at the appendix if you want to have a better look at it and remind yourself of the meaning of each variable.</p>
+<p>Jetez un coup d’œil à l’annexe si vous voulez y jeter un meilleur coup d’œil et vous rappeler de la signification de chaque variable.</p>
 </div>
 </div>
 <div id="section-select" class="section level2">
 <h2>select()</h2>
-<p>The <code>select()</code> function allows you to retrieve columns from a dataset. It’s not the most important function of dplyr, but it is probably one of the simplest. Inside the function you first indicate the dataset and then the columns you want to keep</p>
-<p>Let’s first retrieve the column <code>AGEHH</code>.</p>
+<p>La fonction <code>select()</code> vous permet de récupérer des colonnes d’un tableau de données. Ce n’est pas la fonction la plus importante de dplyr, mais c’est probablement l’une des plus simples. Dans la fonction, vous indiquez d’abord le tableau de données, puis les colonnes que vous voulez conserver</p>
+<p>Retrouvons d’abord la colonne “AGEHH”.</p>
 <div class="tutorial-exercise" data-label="select_1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>select(BeanSurvey, AGEHH)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-<p>You will see that all the functions of dplyr are based on the same basic syntax where the first argument is a data frame. Here, our data frame is called ‘BeanSurvey’, so the first thing we write inside the brackets of the function is ‘BeanSurvey’. Then we indicated the name of the column to retrieve, that is ‘AGEHH’.</p>
-<p>To retrieve more than one column, simply list all the columns you want, separated with commas.</p>
+<p>Vous verrez que toutes les fonctions de dplyr sont basées sur la même syntaxe de base où le premier argument est un tableau de données. Ici, notre tableau de données est appelé “BeanSurvey”, donc la première chose que nous écrivons entre les parenthèses de la fonction est “BeanSurvey”. Ensuite, nous avons indiqué le nom de la colonne à extraire, c’est-à-dire “AGEHH”.</p>
+<p>Pour récupérer plus d’une colonne, il suffit d’énumérer toutes les colonnes que vous voulez, en les séparant par des virgules.</p>
 <div class="tutorial-exercise" data-label="select_2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>select(BeanSurvey, VILLAGE, GENDERHH, AGEHH, LANDAREA)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-<p>Don’t forget that R is case sensitive by the way. If you spell the name of a column wrongly, it will not work! Can you spot what is wrong in the command below? Make the necessary corrections to make it work, and check the solution if you struggle.</p>
+<p>N’oubliez pas que R est sensible à la casse, au fait. Si vous écrivez mal le nom d’une colonne, cela ne fonctionnera pas ! Pouvez-vous repérer ce qui ne va pas dans la commande ci-dessous ? Faites les corrections nécessaires pour qu’elle fonctionne, et vérifiez la solution si vous avez du mal.</p>
 <div class="tutorial-exercise" data-label="select_2_bis" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>select(BeanSurvey, village, GENDERH, LANDAREA)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
 <div class="tutorial-exercise-support" data-label="select_2_bis-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code># &#39;village&#39; should be written with capital letters!
-# If you correct it, it will still not work, because the column GENDERH doesn&#39;t exist.
-# it should be &#39;GENDERHH&#39; (with two &#39;H&#39; instead of just one)
-# Here is the correct command:
+<pre class="text"><code>#  &quot;village&quot; doit être écrit en majuscules !
+# Si vous le corrigez, cela ne fonctionnera toujours pas, car la colonne GENDERH n&#39;existe pas.
+# Il faut écrire &quot;GENDERHH&quot; (avec deux &quot;H&quot; au lieu d&#39;un seul)
+# Voici la commande correcte :
 select(BeanSurvey, VILLAGE, GENDERHH, LANDAREA)</code></pre>
 </div>
-<p><code>select()</code> follows your instructions, so if you change the order of the columns in your command, the order in the output will also change.</p>
+<p><code>select()</code> suit vos instructions, donc si vous changez l’ordre des colonnes dans votre commande, l’ordre dans la sortie changera également.</p>
 <div class="tutorial-exercise" data-label="select_3" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>select(BeanSurvey, GENDERHH, LANDAREA, VILLAGE, ID)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-<p>The first column of our dataset, <code>ID</code>, is now showed last!</p>
-<p>When you want to retrieve lots of columns, it quickly becomes painful to list them all individually. Instead, you can use a colon <code>:</code> which asks R to retrieve all the columns that are positioned between the columns you indicate to the left and right of the colon. You could translate the colon by <strong>to</strong> and <code>MATOKE:COFFEE</code> by “all the columns from MATOKE <strong>to</strong> COFFEE” . So in the following command, we are asking R to retrieve all the columns from MATOKE to COFFEE:</p>
+<p>La première colonne de notre jeu de données, “ID”, est maintenant affichée en dernier !</p>
+<p>Lorsque vous voulez récupérer de nombreuses colonnes, il devient rapidement pénible de les énumérer toutes individuellement. A la place, vous pouvez utiliser un deux-points <code>:</code> qui demande à R de récupérer toutes les colonnes qui sont positionnées entre les colonnes que vous indiquez à gauche et à droite du deux-points. Vous pourriez traduire les deux points par <strong>à</strong> et <code>MATOKE:COFFEE</code> par “toutes les colonnes de MATOKE <strong>à</strong> COFFEE” . Donc dans la commande suivante, nous demandons à R de récupérer toutes les colonnes de MATOKE à COFFEE :</p>
 <div class="tutorial-exercise" data-label="select_4" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>select(BeanSurvey, MATOKE:COFFEE)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-<p>And you can combine both methods to try and get all the columns you want in the least amount of effort.</p>
+<p>Et vous pouvez combiner les deux méthodes pour essayer d’obtenir toutes les colonnes que vous voulez avec le moins d’efforts possible.</p>
 <div class="tutorial-exercise" data-label="select_5" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>select(BeanSurvey, OCCUHH, MATOKE:COFFEE, INTERCROP)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-Note that if you struggle finding the names of your columns, <code>colnames()</code> is a quick way to list them all:
+Notez que si vous avez du mal à trouver les noms de vos colonnes, <code>colnames()</code> est un moyen rapide de les lister toutes :
 <div class="tutorial-exercise" data-label="select_5b" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>colnames(BeanSurvey)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-<strong>Question: Shorten the following command by using the “colon” operator whenever it’s possible </strong>
+<strong>Question : Raccourcissez la commande suivante en utilisant l’opérateur “deux points” chaque fois que c’est possible </strong>.
 <div class="tutorial-exercise" data-label="select_6" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>select(BeanSurvey, VILLAGE, HHTYPE, GENDERHH, AGEHH, MATOKE, MAIZE, BEANS, BANANA, CASSAVA, COFFEE, LANDAREA, INTERCROP)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
@@ -210,135 +210,134 @@ Note that if you struggle finding the names of your columns, <code>colnames()</c
 </div>
 <div id="section-filter" class="section level2">
 <h2>filter()</h2>
-<p>When you want to retrieve specific rows rather than columns, you use the function <code>filter()</code>. It is a function that you will use very often, for example, to filter out observations that appear to be of bad quality or that are not relevant for your analysis. The way it works is similar to <code>select()</code>: we write the dataset first, and then we indicate the rows that we want to retrieve. Except that our rows don’t have names, so we use conditions on some of our columns instead. In the command below, the expression <code>ADULTS&gt;3</code> tells R that we want all the rows for which the column <code>ADULTS</code> has a value greater than 3. That is, we are asking R to keep all the households that have more than 3 adults</p>
+<p>Lorsque vous souhaitez récupérer des lignes spécifiques plutôt que des colonnes, vous utilisez la fonction <code>filter()</code>. C’est une fonction que vous utiliserez très souvent, par exemple, pour filtrer les observations qui semblent être de mauvaise qualité ou qui ne sont pas pertinentes pour votre analyse. Son fonctionnement est similaire à celui de la fonction <code>select()</code> : nous écrivons d’abord le tableau de données, puis nous indiquons les lignes que nous voulons récupérer. Sauf que nos lignes n’ont pas de nom, nous utilisons donc des conditions sur certaines de nos colonnes a la place. Dans la commande ci-dessous, l’expression “ADULTS&gt;3” indique à R que nous voulons toutes les lignes pour lesquelles la colonne “ADULTS” a une valeur supérieure à 3. Autrement dit, nous demandons à R de garder tous les ménages qui ont plus de 3 adultes</p>
 <div class="tutorial-exercise" data-label="filter_1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>filter(BeanSurvey, ADULTS&gt;3)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-<p>As you can see, R returns us all the columns, but the number of rows is now 5 instead of 50.</p>
-<p>In R, the syntax to check if a value is greater or lower than another value is intuitive. You use the symbols <code>&gt;</code> and <code>&lt;</code> like we just did. However, to check if a value is EQUAL TO another value, you need to use <code>==</code>, not <code>=</code>. That’s because a single equal has another use:</p>
+<p>Comme vous pouvez le voir, R nous renvoie toutes les colonnes, mais le nombre de lignes est maintenant de 5 au lieu de 50.</p>
+<p>Dans R, la syntaxe pour vérifier si une valeur est supérieure ou inférieure à une autre valeur est intuitive. Vous utilisez les symboles “&gt;” et “&lt;” comme nous venons de le faire. Cependant, pour vérifier si une valeur est ÉGALE à une autre valeur, vous devez utiliser <code>==</code>, et non pas <code>=</code>. C’est parce qu’un simple signe d’égalité a une autre utilité :</p>
 <ul>
-<li>A single equals sign is a <em>statement</em>. When you write <code>x=y</code>, it sets x to be equal y.</li>
-<li>A double equals sign is a <em>question</em>. When you write <code>x==y</code>, you’re asking R <strong><em>Is x equal to y?</em></strong>. If the response is yes, the condition is verified.</li>
+<li>Un seul signe d’égalité est une <em>déclaration</em>. Lorsque vous écrivez “x=y”, cela signifie que x est égal à y.</li>
+<li>Un signe double égal est une <em>question</em>. Quand vous écrivez “x==y”, vous demandez a R <strong><em>Est-ce que x est égal à y ?</em></strong>. Si la réponse est oui, la condition est vérifiée.</li>
 </ul>
-So to retrieve all the households for which the household head is of gender female, we use the double equals sign.
+Donc, pour retrouver tous les ménages dont le chef de ménage est de sexe féminin, nous utilisons le signe double égal.
 <div class="tutorial-exercise" data-label="filter_2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>filter(BeanSurvey, GENDERHH==&quot;female&quot;)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-<p>In the command above R will check all the rows of the dataset BeanSurvey and returns the ones where the column <code>GENDERHH</code> takes the value “female”. Note the quotes around <em>female</em>. Whenever you write a string of text that is not an object or a column, you need to encapsulate it between quotes. Otherwise R will try to interpret it as an object or the name of a column.</p>
-<p>Also note that in R, you will not always get an error when you make a mistake. For example, if you write “female” with a capital F, you will just get no result:</p>
+<p>Dans la commande ci-dessus, R va vérifier toutes les lignes du tableau de données BeanSurvey et renvoie celles où la colonne “GENDERHH” prend la valeur “female”. Notez les guillemets autour de <em>female</em>. Chaque fois que vous écrivez une chaîne de texte qui n’est pas un objet ou une colonne, vous devez l’encapsuler entre guillemets. Sinon, R essaiera de l’interpréter comme un objet ou le nom d’une colonne.</p>
+<p>Notez également que dans R, vous n’obtiendrez pas toujours une erreur lorsque vous faites une faute. Par exemple, si vous écrivez “female” avec un F majuscule, vous n’obtiendrez tout simplement pas de résultat :</p>
 <div class="tutorial-exercise" data-label="filter_3" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>filter(BeanSurvey, GENDERHH==&quot;Female&quot;)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-<p>That’s because even though R does not give you the answer you want, the command you wrote is totally valid. You’re asking R to retrieve all the rows where Gender takes the value “Female”. There are none, because R is case sensitive and female is always written with a lower case <strong>f</strong> in our dataset. If you were to write “<strong>GENDER</strong>” instead of “<strong>GENDERHH</strong>” on the left of the double equals sign though, you would get an error, because there’s no column named “GENDER”, so R cannot check the condition.</p>
-<div id="section-using-multiple-conditions" class="section level3">
-<h3>using multiple conditions</h3>
-<p>You can also use multiple conditions and additional functions to filter rows. Here are the main logical symbols that you can use when building conditions in R:</p>
-<p><code>==</code> means EQUALS<br />
-<code>!=</code> means DIFFERENT<br />
-<code>&lt;</code> means LESS THAN<br />
-<code>&gt;</code> means GREATER THAN<br />
-<code>&lt;=</code> means LESS THAN OR EQUAL TO<br />
-<code>&gt;=</code> means GREATER THAN OR EQUAL TO</p>
-<p><code>&amp;</code> means AND<br />
-<code>|</code> means OR<br />
-<code>!</code> means NOT</p>
-<p>If you’re not familiar with the use of logical operations, have a look at the first 3 minutes of this video: <a href="https://www.youtube.com/watch?v=6PpQS-YLWDQ" target="_blank"> R Tutorial - Logical Operators and Vectors in R </a></p>
-Let’s use multiple conditions in a couple of examples. One thing you should do to check the quality of your data is to inspect it for inconsistency. For example, it would make no sense to have households that ‘grow beans for sale’, but ‘don’t grow beans’! That is we can’t have at the same time the value of the column <code>SELLBEANS</code> be “yes” and the value of the column <code>BEANS</code> be “no”. Lets’ check that no row is satisfying this absurd double condition with <code>filter()</code>:
+<p>C’est parce que même si R ne vous donne pas la réponse que vous voulez, la commande que vous avez écrite est tout à fait valable. Vous demandez à R de récupérer toutes les lignes où le sexe prend la valeur “Female”. Il n’y en a pas, car R est sensible à la casse et “Female” est toujours écrit avec une minuscule <strong>f</strong> dans notre jeu de données. Si vous deviez cependant écrire “<strong>GENDER</strong>” au lieu de “<strong>GENDERHH</strong>” à gauche du signe “double égal”, vous obtiendriez une erreur, car il n’y a pas de colonne nommée “GENDER”, donc R ne peut pas vérifier la condition.</p>
+<div id="section-en-utilisant-des-conditions-multiples" class="section level3">
+<h3>en utilisant des conditions multiples</h3>
+<p>Vous pouvez également utiliser plusieurs conditions et des fonctions supplémentaires pour filtrer les lignes. Voici les principaux symboles logiques que vous pouvez utiliser lorsque vous créez des conditions dans R :</p>
+<p><code>==</code> signifie EGALE<br />
+<code>!=</code> signifie DIFFÉRENT<br />
+<code>&lt;</code> signifie INFERIEUR À<br />
+<code>&gt;</code> signifie SUPERIEUR À<br />
+<code>&lt;=</code> signifie INFERIEUR OU EGALE À <code>&gt;=</code> signifie SUPERIEUR OU EGALE À</p>
+<p><code>&amp;</code> signifie ET<br />
+<code>|</code> signifie OU<br />
+<code>!</code> signifie PAS</p>
+<p>Si vous n’êtes pas familier avec l’utilisation des opérations logiques, jetez un coup d’oeil aux 3 premières minutes de cette vidéo : <a href="https://www.youtube.com/watch?v=6PpQS-YLWDQ" target="_blank"> Tutoriel R - Opérateurs et vecteurs logiques en R </a></p>
+Utilisons des conditions multiples dans quelques exemples. Une chose que vous devez faire pour vérifier la qualité de vos données est de les inspecter pour en vérifier la cohérence. Par exemple, il serait absurde que des ménages “cultivent des haricots pour la vente”, mais “ne cultivent pas de haricots” ! C’est-à-dire que nous ne pouvons pas avoir en même temps la valeur de la colonne “SELLBEANS” egale a “Yes” et la valeur de la colonne “BEANS” egale a “No”. Vérifions qu’aucune ligne ne satisfait à cette double condition absurde avec <code>filter()</code> :
 <div class="tutorial-exercise" data-label="filter_4" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>filter(BeanSurvey, SELLBEANS==&quot;Yes&quot; &amp; BEANS==&quot;No&quot;)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-<p>In the command above, we separated the two condition with <code>&amp;</code>, which is the symbol used in R for ‘AND’, because we want to retrieve the rows where <code>SELLBEANS=="Yes"</code> <strong>AND</strong> <code>BEANS=="No"</code>. R did not retrieve any row, which is good. Don’t forget that R is case sensitive though. In our data, the value “Yes” is written with an upper case “Y” and a lower case “es”, and the value “No” is written with an uppercase “N” and a lowercase “o”. It would be very easy to misspell these two values in our command, which would make us reach the same conclusion that there is no inconsistency in our data, but without having tested it properly!</p>
-<code>filter</code> can also be useful to explore a specific subset of the population. For example, I saw that the head of household of most households is either a farmer or a fisherman. I am a bit curious about the households who are not in this situation. We can retrieve them using the following command:
+<p>Dans la commande ci-dessus, nous avons séparé les deux conditions avec <code>&amp;</code>, qui est le symbole utilisé dans R pour ‘ET’, parce que nous voulons récupérer les lignes où <code>SELLBEANS=="Yes"</code> <strong>ET</strong> <code>BEANS=="No"</code>. R n’a récupéré aucune ligne, ce qui est une bonne chose. N’oubliez pas que R est sensible à la casse. Dans nos données, la valeur “Yes” est écrite avec un “Y” majuscule et un “es” minuscule, et la valeur “No” est écrite avec un “N” majuscule et un “o” minuscule. Il serait très facile de mal orthographier ces deux valeurs dans notre commande, ce qui nous amènerait à la même conclusion qu’il n’y a pas d’incohérence dans nos données, mais sans l’avoir testée correctement !</p>
+<code>filter()</code> peut également être utile pour explorer un sous-ensemble spécifique de la population. Par exemple, j’ai vu que le chef de famille de la plupart des ménages est soit un agriculteur (farmer), soit un pêcheur (fisherman). Je suis un peu curieux de savoir quels sont les ménages qui ne sont pas dans cette situation. Nous pouvons les retrouver en utilisant la commande suivante :
 <div class="tutorial-exercise" data-label="filter_5" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>filter(BeanSurvey, !(OCCUHH==&quot;Farmer&quot; | OCCUHH==&quot;Fisherman&quot;))</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-<p>The command above looks a bit complicated, but it is actually quite simple. Let’s break it into steps.</p>
-The symbol <code>|</code> represents “OR”, so the following command would retrieve all the households for which the head of household is a farmer OR a fisherman:
+<p>La commande ci-dessus semble un peu compliquée, mais elle est en fait assez simple. Décomposons-la en étapes.</p>
+Le symbole <code>|</code> représente “OU”, donc la commande suivante récupérerait tous les ménages dont le chef de famille est un agriculteur OU un pêcheur :
 <div class="tutorial-exercise" data-label="filter_6" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>filter(BeanSurvey, OCCUHH==&quot;Farmer&quot; | OCCUHH==&quot;Fisherman&quot;)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-Brackets are used to group expressions, in order to force R to perform operations in a specific order, exactly as in basic mathematical operations. Encapsulating the whole expression within brackets doesn’t change the output of our command:
+Les parenthèses sont utilisées pour regrouper des expressions, afin de forcer R à effectuer des opérations dans un ordre spécifique, exactement comme dans les opérations mathématiques de base. Encapsuler toute l’expression entre parenthèses ne change pas le résultat de notre commande :
 <div class="tutorial-exercise" data-label="filter_7" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>filter(BeanSurvey, (OCCUHH==&quot;Farmer&quot; | OCCUHH==&quot;Fisherman&quot;))</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-Finally we use the symbol <code>!</code> that represents “NOT”, to only keep the rows where the head of household is <strong>NOT</strong> either a farmer or a fisherman.
+Enfin, nous utilisons le symbole <code>!</code> qui représente “PAS”, pour ne garder que les lignes où le chef de famille n’est <strong>PAS</strong> ‘un agriculteur OU un pêcheur’.
 <div class="tutorial-exercise" data-label="filter_8" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>filter(BeanSurvey, !(OCCUHH==&quot;Farmer&quot; | OCCUHH==&quot;Fisherman&quot;))</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-<p>The brackets are important here, because in boolean logic “NOT” takes priority over “OR”, so using the expression <code>!OCCUHH=="Farmer" | OCCUHH=="Fisherman"</code> we would retrieve the rows where <em>the head of household is not a farmer, OR the head of household is a fisherman</em>. This type of priority is similar to the priority of multiplication over addition or subtraction. In maths, the result of the calculation 3 x 2 + 2 is 8. To have the addition 2 + 2 performed before the multiplication 3 x 2, we need to add brackets: 3 x (2 + 2). It is the same with NOT and OR.</p>
-Also note that we could have retrieved our households in another way, using “&amp;” and “!=” (AND and IS DIFFERENT) instead of “|” and “!” (OR and NOT):
+<p>Les parenthèses sont importantes ici, car dans la logique booléenne, “PAS” a priorité sur “OU”, donc en utilisant l’expression <code>!OCCUHH=="Farmer" | OCCUHH=="Fisherman"</code> nous récupérerions les lignes où <em>le chef de ménage n’est pas un agriculteur, OU le chef de ménage est un pêcheur</em>. Ce type de priorité est similaire à la priorité de la multiplication sur l’addition ou la soustraction. En mathématiques, le résultat du calcul 3 x 2 + 2 est 8. Pour que l’addition 2 + 2 soit effectuée avant la multiplication 3 x 2, il faut ajouter des parenthèses : 3 x (2 + 2). C’est la même chose avec PAS et OU.</p>
+Notez également que nous aurions pu récupérer nos ménages d’une autre manière, en utilisant “&amp;” et “!=” (ET et EST DIFFERENT DE) au lieu de “|” et " !" (OU et PAS) :
 <div class="tutorial-exercise" data-label="filter_9" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>filter(BeanSurvey, OCCUHH!=&quot;Farmer&quot; &amp; OCCUHH!=&quot;Fisherman&quot;)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-<p>Indeed, the command above is asking R for the rows where</p>
+<p>En effet, la commande ci-dessus demande R pour les lignes où</p>
 <blockquote>
-<p>the occupation of the head of household IS DIFFERENT from farmer AND the occupation of the head of household IS DIFFERENT from fisherman.</p>
+<p>la profession du chef de ménage EST DIFFÉRENTE de celle d’agriculteur ET la profession du chef de ménage EST DIFFÉRENTE de celle de pêcheur.</p>
 </blockquote>
-<p>There are often many different ways to get to the same result in R. We believe that the commands we show you in these workbooks are good ones to work efficiently and have a readable code, but if for some reason you want to use different commands, you can do so!</p>
+<p>Il y a souvent plusieurs façons différentes d’arriver au même résultat dans R. Nous pensons que les commandes que nous vous montrons dans ces classeurs sont bonnes pour travailler efficacement et ont un code lisible, mais si pour une raison quelconque vous voulez utiliser des commandes différentes, vous pouvez le faire !</p>
 </div>
-<div id="section-using-functions-within-a-condition-statement" class="section level3">
-<h3>using functions within a condition statement</h3>
-In a condition statement, we can also use functions like <code>max()</code> or <code>min()</code> to help us with the filtering. Let’s retrieve the households whose land area of farm is the largest:
+<div id="section-utiliser-des-fonctions-dans-une-déclaration-de-condition" class="section level3">
+<h3>utiliser des fonctions dans une déclaration de condition</h3>
+Dans une déclaration de condition, nous pouvons également utiliser des fonctions comme <code>max()</code> ou <code>min()</code> pour nous aider à filtrer. Récupérons les ménages dont la surface agricole est la plus importante :
 <div class="tutorial-exercise" data-label="filter_10" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>filter(BeanSurvey, LANDAREA==max(LANDAREA))</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-In the command above, R first calculates the result of <code>max(LANDAREA)</code> in the dataframe BeanSurvey, which is 10:
+Dans la commande ci-dessus, R calcule d’abord le résultat de <code>max(LANDAREA)</code> dans le tableau de données BeanSurvey, qui est 10 :
 <div class="tutorial-exercise" data-label="filter_11" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>max(BeanSurvey$LANDAREA)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-And it then performs the corresponding filtering:
+Et il effectue ensuite le filtrage correspondant :
 <div class="tutorial-exercise" data-label="filter_12" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>filter(BeanSurvey, LANDAREA==10)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-<p>As you see, we didn’t get one single result here. That’s because filter retrieves <em>all</em> the rows that satisfy the specified condition, and we have several households whose farm land area is 10 acres.</p>
-<strong>Question: write the command that would show the household that has the highest quantity of beans planted in long rain season. Hint: there is a missing value in the column</strong>
+<p>Comme vous le voyez, nous n’avons pas obtenu un seul résultat ici. C’est parce que le filtre récupère <em>toutes</em> les lignes qui remplissent la condition spécifiée, et nous avons plusieurs ménages dont la surface agricole est de 10 acres (cliquez sur la fleche noire pour acceder a la colonne <code>LANDAREA</code> dans le tableau des resultats).</p>
+<strong>Question : écrivez la commande qui indiquerait le ménage qui a la plus grande quantité de haricots plantés pendant la longue saison des pluies. Attention : il manque une valeur dans la colonne</strong>
 <div class="tutorial-exercise" data-label="filter_13" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
 <div class="tutorial-exercise-support" data-label="filter_13-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>filter(BeanSurvey, BEANSPLANTED_LR==max(BEANSPLANTED_LR, na.rm=TRUE))
-# if we omit the argument &#39;na.rm=TRUE&#39; in the function max(), we end up with no household.
-# that&#39;s because the missing value makes max(BEANSPLANTED_LR) be unknown/missing as well.</code></pre>
+# si nous omettons l&#39;argument &#39;na.rm=TRUE&#39; dans la fonction max(), nous nous retrouvons sans ménage.
+# car la valeur manquante fait que max(BEANSPLANTED_LR) est également inconnu/manquant.</code></pre>
 </div>
 </div>
 </div>
 <div id="section-arrange" class="section level2">
 <h2>arrange()</h2>
-<p>Let’s relax a little and have a brief look at the <code>arrange()</code> function, which is used to order the rows of a data frame according to the values of some columns. The syntax is very similar to that of <code>select()</code>, as after we enter the dataset, we simply indicate the column(s) by which we want to order the dataset. Let’s order our dataset by land area of farm:</p>
+<p>Détendons-nous un peu et jetons un bref coup d’oeil à la fonction <code>arrange()</code>, qui est utilisée pour ordonner les lignes d’un tableau de données en fonction des valeurs de certaines colonnes. La syntaxe est très similaire à celle de la fonction <code>select()</code>, car après avoir indique le tableau de données, nous indiquons simplement la ou les colonnes par lesquelles nous voulons ordonner le tableau de données. Ordonnons notre tableau de données par superficie de l’exploitation :</p>
 <div class="tutorial-exercise" data-label="arrange_1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>arrange(BeanSurvey, LANDAREA)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-<p>Depending on the size and resolution of your screen, you may need to click the little arrow at the top right to reach the column <code>LANDAREA</code> and check that the data has indeed been ordered by that variable. You will see that the households with smallest land area are at the top. That’s because by default, <code>arrange()</code> orders your dataset by increasing values of the indicated column. If we want to order from highest to lowest value instead, we need to place our column inside the function <code>desc()</code> - “desc” for <em>descending</em></p>
+<p>Selon la taille et la résolution de votre écran, vous devrez peut-être cliquer sur la petite flèche en haut à droite pour atteindre la colonne “LANDAREA” et vérifier que les données ont bien été ordonnées par cette variable. Vous verrez que les ménages ayant la plus petite surface de terrain se trouvent en haut. C’est parce que par défaut, <code>arrange()</code> ordonne votre tableau de données en augmentant les valeurs de la colonne indiquée. Si nous voulons plutôt ordonner de la valeur la plus élevée à la plus basse, nous devons placer notre colonne à l’intérieur de la fonction <code>desc()</code> - “desc” pour <em>descending</em>.</p>
 <div class="tutorial-exercise" data-label="arrange_2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>arrange(BeanSurvey, desc(LANDAREA))</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-Note that we can order a dataset by multiple columns and these columns don’t necessary have to be numeric. Let’s order our dataset by age group, gender of the head of household, and decreasing order of the number of children respectively:
+Notez que nous pouvons ordonner un tableau de données par plusieurs colonnes et que ces colonnes n’ont pas besoin d’être numériques. Ordonnons notre tableau de données par groupe d’âge, sexe du chef de ménage et par ordre décroissant du nombre d’enfants respectivement :
 <div class="tutorial-exercise" data-label="arrange_3" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>arrange(BeanSurvey, AGEHH, GENDERHH, desc(CHILDREN))</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-<p>The households where the head of household are between 20 and 30 years old are now at the top, the one with a female head of household being first. And for the male headed households, the higher the number of children, the higher they place in the table.</p>
-As this section is a bit shorter than the other ones, let me briefly introduce you to the function <code>slice()</code>, which is quite useful to quickly retrieve specific rows by position. The syntax is similar to all the core functions of dplyr. The data is the first argument, and then we indicate the rows that we want. Since <code>1:5</code> is a shorthand for <code>c(1,2,3,4,5)</code>, we can retrieve the first 5 rows of our dataset with the following command:
+<p>Les ménages dont le chef de famille a entre 20 et 30 ans sont désormais tout en haut, celui dont le chef de famille est une femme étant le premier. Et pour les ménages dirigés par un homme, plus le nombre d’enfants est élevé, plus ils se situent en haut dans le tableau.</p>
+Comme cette section est un peu plus courte que les autres, permettez-moi de vous présenter brièvement la fonction <code>slice()</code>, qui est très utile pour retrouver rapidement des lignes spécifiques par position. La syntaxe est similaire à toutes les fonctions de base de dplyr. Les données sont le premier argument, et ensuite nous indiquons les lignes que nous voulons. Puisque <code>1:5</code> est une abréviation de <code>c(1,2,3,4,5)</code>, nous pouvons récupérer les 5 premières lignes de notre tableau de données avec la commande suivante :
 <div class="tutorial-exercise" data-label="arrange_slice" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>slice(BeanSurvey, 1:5)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-<p><code>slice()</code> is often useful after <code>arrange()</code>, to retrieve the few rows that have the highest or lowest values for the column used to order the rows. Combining manipulations like that is what we’ll learn in the second part of the workbook. Stay tuned!</p>
-<strong>Question: Use the function <code>arrange()</code> to order the rows of the BeanSurvey dataset by decreasing order of the number of adults in the household</strong>
+<p><code>slice()</code> est souvent utile après <code>arrange()</code>, pour récupérer les quelques lignes qui ont les valeurs les plus élevées ou les plus basses pour la colonne utilisée pour ordonner les lignes. Combinant des manipulations de ce type est ce que nous apprendrons dans la deuxième partie du manuel.</p>
+<strong>Question : Utilisez la fonction <code>arrange()</code> pour ordonner les lignes du tableau de données BeanSurvey par ordre décroissant du nombre d’adultes dans le ménage</strong>
 <div class="tutorial-exercise" data-label="arrange_4" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
@@ -348,129 +347,133 @@ As this section is a bit shorter than the other ones, let me briefly introduce y
 </div>
 <div id="section-summarise" class="section level2">
 <h2>summarise()</h2>
-<p>The next function we will learn about is <code>summarise()</code>, which calculates summaries of variables within our dataset. As with all the other dplyr functions, the first argument is the name of our data. The second argument provides a summary function used on a variable from the data.</p>
-For example, to know the total area of all the household farms in the BeanSurvey data frame, we can use the summary function <code>sum()</code>:
+<p>La prochaine fonction que nous allons découvrir est "summarise()`, qui calcule des résumés de variables dans notre tableau de données. Comme pour toutes les autres fonctions dplyr, le premier argument est le nom de nos données. Le deuxième argument fournit une fonction de résumé utilisée sur une variable des données.</p>
+Par exemple, pour connaître la superficie totale de toutes les exploitations agricoles des ménages dans le tableau des données BeanSurvey, nous pouvons utiliser la fonction de résumé <code>sum()</code> :
 <div class="tutorial-exercise" data-label="summarize_1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>summarise(BeanSurvey, sum(LANDAREA))</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-This seems equivalent to doing:
+Cela semble équivalent à faire:
 <div class="tutorial-exercise" data-label="summarize_1b" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>sum(BeanSurvey$LANDAREA)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-Except that with <code>summarise()</code>, the output is a data frame, which is extremely useful if we want to use our summaries later, or combine our command with other manipulations. We should also get used to give a proper name to the output column containing our summary statistics to make it easy to reuse it in later steps. To do so, we place the name we would like for our summary followed by a single equals sign just in front of our calculation.
+Sauf qu’avec <code>summarise()</code>, le résultat est un tableau de données, ce qui est extrêmement utile si nous voulons utiliser nos résumés plus tard, ou combiner notre commande avec d’autres manipulations. Nous devrions également nous habituer à donner un nom aux colonnes de résultats contenant nos resumes statistiques afin de pouvoir les réutiliser facilement dans les étapes ultérieures. Pour ce faire, nous plaçons le nom que nous souhaitons pour notre résumé suivi d’un seul signe égale juste devant notre calcul.
 <div class="tutorial-exercise" data-label="summarize_2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>summarise(BeanSurvey, totalArea=sum(LANDAREA))</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-<p>Note that we use the single equals sign, not the double equals sign, because we are <strong>assigning</strong> our summary statistics <code>sum(LANDAREA)</code> to a column called <code>totalArea</code>.</p>
-<p><strong>Remark</strong>: You may sometimes see people use summari<strong>z</strong>e() instead of summari<strong>s</strong>e() like I do in the video. They are identical. The people who made dplyr are from New Zealand, where they use the British spelling summari<strong>s</strong>e(). But they are very nice people and decided to allow for the American spelling as well.</p>
-<p>We can ask R to give us more than one summary, by listing the calculations we want to perform, separated with commas.</p>
+<p>Notez que nous utilisons le simple signe d’égale, et non le double signe d’égale, car nous <strong>attribuons</strong> notre resume statistique <code>sum(LANDAREA)</code> à une colonne appelée <code>totalArea</code>.</p>
+<p><strong>Remarque</strong> : Vous pouvez parfois voir des gens utiliser summari<strong>z</strong>e() au lieu de summari<strong>s</strong>e() comme je le fais dans la vidéo. Ces deux fonctions sont identiques. Les personnes qui ont developpe dplyr viennent de Nouvelle-Zélande, où ils utilisent l’orthographe britannique summari<strong>s</strong>e(). Mais ils sont très gentils et ont décidé d’autoriser aussi l’orthographe américaine.</p>
+<p>Nous pouvons demander à R de nous donner plus d’un résumé statistique, en énumérant les calculs que nous voulons effectuer, séparés par des virgules.</p>
 <div class="tutorial-exercise" data-label="summarize_3" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>summarise(BeanSurvey, households=n(), mean_area=mean(LANDAREA), sd_area=sd(LANDAREA))</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-<p>Here we used the functions <code>mean()</code> and <code>sd()</code> to calculate the mean, and standard deviation of the column LANDAREA. We also used the function <code>n()</code>, which simply counts the number of rows - that is, here, the number of households. Note that with <code>n()</code> we don’t put a name of variable inside the brackets, since the number of rows does not depend on the variables.</p>
-<p>So far, we’ve only used numeric variables in our calculations, but we can also use factors or categorical variables. For example, it is often useful to count the number of occurrences of a certain value using conditions, a bit like we did in the <code>filter</code> section. Let’s try to count the number of female headed and male headed households:</p>
+<p>Ici, nous avons utilisé les fonctions <code>mean()</code> et <code>sd()</code> pour calculer la moyenne et l’écart-type de la colonne LANDAREA. Nous avons également utilisé la fonction <code>n()</code>, qui compte simplement le nombre de lignes - c’est-à-dire, ici, le nombre de ménages. Notez qu’avec <code>n()</code>, nous ne mettons pas de nom de variable entre parenthèses, puisque le nombre de lignes ne dépend pas des variables.</p>
+<p>Jusqu’à présent, nous n’avons utilisé que des variables numériques dans nos calculs, mais nous pouvons également utiliser des facteurs ou des variables catégorielles. Par exemple, il est souvent utile de compter le nombre d’occurrences d’une certaine valeur en utilisant des conditions, un peu comme nous l’avons fait dans la section “filter()”. Essayons de compter le nombre de ménages dirigés par une femme et le nombre de ménages dirigés par un homme :</p>
 <div class="tutorial-exercise" data-label="summarize_4" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>summarise(BeanSurvey, female_HH=sum(GENDERHH==&quot;female&quot;), male_HH= sum(GENDERHH==&quot;male&quot;))</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-<p>Argh, we obtain the value ‘NA’! We’ve discussed the issue of R not being able to calculate some summary statistics like a mean, sum or maximum when there’s a missing data in the variable, unless we add the argument <code>na.rm=TRUE</code>. We’ve not discussed how to check the presence of missing values in the first place though. One good way to do that would be to use <code>filter()</code> together with the base-R function <code>is.na()</code>.</p>
-Let’s see what <code>is.na()</code> does when we apply it to our gender variable:
+<p>Argh, on obtient la valeur “NA” ! Nous avons discuté du fait que R ne peut pas calculer certains resumes statistiques comme une moyenne, une somme ou un maximum lorsqu’il manque une donnée dans la variable, à moins d’ajouter l’argument “na.rm=TRUE”. Nous n’avons pas discuté de la façon de vérifier la présence de valeurs manquantes en premier lieu par contre. Une bonne façon de faire ca est d’utiliser <code>filter()</code> avec la fonction disponible nativement dans R <code>is.na()</code>.</p>
+Voyons ce que fait la fonction <code>is.na()</code> lorsque nous l’appliquons à notre variable de genre :
 <div class="tutorial-exercise" data-label="summarize_4b" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>is.na(BeanSurvey$GENDERHH)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-<p>It gives us a vector that take the value TRUE when GENDERHH is missing and false otherwise.</p>
-We can then use it inside <code>filter()</code> to keep only the rows where <code>is.na(GENDERHH)</code> is equal to <code>TRUE</code>:
+<p>Il nous donne un vecteur qui prend la valeur TRUE quand le SEXE est absent et FALSE sinon.</p>
+Nous pouvons ensuite l’utiliser dans <code>filter()</code> pour ne garder que les lignes où <code>is.na(GENDERHHH)</code> est égal à <code>TRUE</code> :
 <div class="tutorial-exercise" data-label="summarize_4c" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>filter(BeanSurvey, is.na(GENDERHH)==TRUE)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-<p>Here we go, this household in Kimbugu was the one where the gender of the head of household was missing! Note that we didn’t place any quote around TRUE, which may be confusing for some of you, as we told you a few times that you should always have quote around strings of text that are not existing objects or variables within R. Well that’s because within R, TRUE and FALSE are recognized as values rather than strings of text. Don’t worry, we’ll talk more about it a bit later.</p>
-So now that we confirmed that there is a missing value in the variable GENDERHH, we can tell R to skip it using the argument <code>na.rm=TRUE</code> within the <code>sum()</code> function:
+<p>Et voilà! Ce menage de Kimbugu était celui où le sexe du chef de famille manquait ! Notez que nous n’avons pas placé de guillemets autour du TRUE, ce qui peut être déroutant pour certains d’entre vous, car nous vous avons dit à plusieurs reprises que vous devriez toujours avoir des guillemets autour des chaînes de texte qui ne sont pas des objets ou des variables existants dans R. Eh bien c’est parce que dans R, <code>TRUE</code> et <code>FALSE</code> sont reconnus comme des valeurs plutôt que des chaînes de texte. Ne vous inquiétez pas, nous en reparlerons un peu plus tard.</p>
+<p>Maintenant que nous avons confirmé qu’il y a une valeur manquante dans la variable GENDERHH, nous pouvons dire à R de l’ignorer en utilisant l’argument <code>na.rm=TRUE</code> dans la fonction <code>sum()</code> :</p>
 <div class="tutorial-exercise" data-label="summarize_6" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>summarise(BeanSurvey, female_HH=sum(GENDERHH==&quot;female&quot;, na.rm=TRUE), male_HH= sum(GENDERHH==&quot;male&quot;, na.rm=TRUE))</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-<p>We have our summaries!</p>
-<strong>Question: Use summarise to calculate the number of households growing beans, maize and coffee. Give sensible names to these numbers</strong>
+<p>Nous avons nos résumés statistiques !</p>
+<strong>Question : Utilisez summarise() pour calculer le nombre de ménages qui cultivent des haricots, du maïs et du café. Donnez des noms sensés a vos colonnes de resultat</strong>
 <div class="tutorial-exercise" data-label="summarize_7" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
 <div class="tutorial-exercise-support" data-label="summarize_7-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>summarise(BeanSurvey, grow_beans = sum(BEANS==&quot;Yes&quot;), grow_maize = sum(MAIZE==&quot;Yes&quot;), grow_coffee = sum(COFFEE==&quot;Yes&quot;)) </code></pre>
 </div>
-<p><code>summarise()</code> is especially useful when it is used in combination with the function <code>group_by()</code>, as the latter allow us to calculate summaries for <strong><em>groups</em></strong> of observations rather than for the whole dataset. We will learn how to do that a bit later in the second part of this workbook.</p>
+<p><code>summarise()</code> est particulièrement utile lorsqu’elle est utilisée en combinaison avec la fonction <code>group_by()</code>, car cette dernière nous permet de calculer des résumés pour des <strong><em>groupes</em></strong> d’observations plutôt que pour le tableau de données tout entier. Nous apprendrons comment faire cela un peu plus tard dans la deuxième partie de ce manuel.</p>
 </div>
 <div id="section-mutate" class="section level2">
 <h2>mutate()</h2>
-<p>The next function to look at is <code>mutate()</code>. It is used to modify existing columns or create new columns. The syntax is as follows: We indicate our dataset first, as always, and then we provide the calculations that we want to perform for our new columns.</p>
-For example, it would probably be useful to create a new column representing the size of each household, by adding the number of children and the number of adults:
+<p>La prochaine fonction à examiner est <code>mutate()</code>. Elle est utilisée pour modifier des colonnes existantes ou créer de nouvelles colonnes. La syntaxe est la suivante : Nous indiquons d’abord notre tableau de données, comme toujours, puis nous fournissons les calculs que nous voulons effectuer pour nos nouvelles colonnes.</p>
+Par exemple, il serait probablement utile de créer une nouvelle colonne représentant la taille de chaque ménage, en ajoutant le nombre d’enfants et le nombre d’adultes :
 <div class="tutorial-exercise" data-label="mutate_1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>mutate(BeanSurvey, hh_size = ADULTS + CHILDREN)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-<p>Like for the summarise function, we could omit naming our new column, but then R would just use the calculation itself as the column name. That’s what happened in the video. We don’t always set a good example!</p>
-<p>You can see that the new column <code>hh_size</code> appears at the very end of the dataset (use the little black arrow at the top right to reach it). We could use <code>select()</code> to move it more towards the beginning of our columns if we knew how to combine multiple manipulations. We will see how to do that shortly.</p>
-<p>Similarly to <code>summarise()</code>, you can use functions like <code>sum()</code>, <code>min()</code>, <code>max()</code> , or calculations over conditions to help you create your new columns. Let’s create a variable that tells us whether or not a household has children:</p>
+<p>Comme pour la fonction de <code>summarise()</code> , nous pourrions omettre de nommer notre nouvelle colonne, mais alors R utiliserait simplement le calcul lui-même comme nom de colonne. C’est ce qui s’est passé dans la vidéo. Nous ne donnons pas toujours le bon exemple !</p>
+<p>Vous pouvez voir que la nouvelle colonne “hh_size” apparaît à la toute fin du tableau de données (utilisez la petite flèche noire en haut à droite pour l’atteindre). Nous pourrions utiliser <code>select()</code> pour la déplacer davantage vers le début de nos colonnes si nous savions comment combiner plusieurs manipulations. Nous verrons bientôt comment faire cela.</p>
+<p>Comme pour <code>summarise()</code>, vous pouvez utiliser des fonctions comme <code>sum()</code>, <code>min()</code>, <code>max()</code>, ou des calculs sur les conditions pour vous aider à créer vos nouvelles colonnes. Créons une variable qui nous indique si un ménage a des enfants ou non :</p>
 <div class="tutorial-exercise" data-label="mutate_2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>mutate(BeanSurvey, has_children = CHILDREN &gt; 0)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-<p>In the command above, when the column CHILDREN is greater than 0, the expression <code>CHILDREN &gt; 0</code> returns <code>TRUE</code>. Otherwise, it returns <code>FALSE</code>. If you look just below the name of our new variable (click the black arrow to get to the right end of the dataset), you will see a set of weird grey characters. It indicates the type of the variable. Here the set of characters is <code>&lt;lgl&gt;</code> and “lgl” is a shorthand for ‘logical’. That’s because we just created a variable of type ‘logical’. The only values that a logical variable can take are ‘TRUE’ and ‘FALSE’, which are special values used by R to determine if a condition is true or false. We had already created a logical variable a few commands ago when we checked if there was any missing value in the variable GENDERHH using <code>is.na(GENDERHH)</code>, though we did not save it. With mutate, we keep it in our dataset!</p>
-<p>Note that you have a similar set of grey characters below every column name, and <code>&lt;chr&gt;</code>, <code>&lt;int&gt;</code>, <code>&lt;dbl&gt;</code> indicate that the corresponding variables are of type ‘character’, ‘integer’ and ‘double’ respectively, the two latter being different types of numeric variables. The operations and functions that you can apply to a variable depends on their type, so this information is very useful, especially to understand why you get errors or things don’t go as expected. For example, whenever you try to make a calculation with a character variable, R will give you an error.</p>
-<div id="section-creating-categorical-variables-using-ifelse" class="section level3">
-<h3>creating categorical variables using ifelse()</h3>
-<p>So far, we’ve created a numeric column (<code>hh_size</code> was of type integer) and a column of type logical. Creating a proper categorical variable is a bit less straightforward. Let’s see one nice way to do so, using the base-R function <code>ifelse()</code>, which checks every row for a condition and returns a value that depends of this condition. <code>ifelse()</code> takes three arguments. A condition to verify, a value that is returned if the condition is verified, and a value returned if the condition is <strong>not</strong> verified. So the syntax is:</p>
-<p>ifelse(<code>CONDITION</code>, <code>VALUE IF CONDITION IS TRUE</code>, <code>VALUE IF CONDITION IS FALSE</code>)</p>
-Let’s try with a simple example. We’ll create a simple column hh_occupation, that takes only two values: “Farmer” or “Other”. As a reminder, here are the values that the column OCCUH takes in our dataset:
+<p>Dans la commande ci-dessus, lorsque la colonne CHILDREN est supérieure à 0, l’expression “CHILDREN &gt; 0” renvoie “TRUE”. Sinon, elle renvoie <code>FALSE</code>. Si vous regardez juste en dessous du nom de notre nouvelle variable (cliquez sur la flèche noire pour vous rendre à l’extrémité droite du tableau de données), vous verrez un ensemble de caractères gris bizarres. Il indique le type de la variable. Ici, il est ecrit “<lgl>” et “lgl” est une abréviation pour “logical” (logique). C’est parce que nous venons de créer une variable de type “logique”. Les seules valeurs qu’une variable logique peut prendre sont “TRUE” et “FALSE”, qui sont des valeurs spéciales utilisées par R pour déterminer si une condition est vraie ou fausse. Nous avions déjà créé une variable logique il y a quelques commandes lorsque nous avons vérifié s’il y avait une valeur manquante dans la variable GENDERHH en utilisant <code>is.na(GENDERHH)</code>, bien que nous ne l’ayons pas sauvegardée. Avec la commande “mutate()”, nous la gardons dans notre tableau de données !</p>
+<p>Notez que vous disposez d’un ensemble similaire de caractères gris sous chaque nom de colonne, et que <code>&lt;chr&gt;</code>, <code>&lt;int&gt;</code>, <code>&lt;dbl&gt;</code> indiquent que les variables correspondantes sont respectivement de type ‘caractère’, ‘entier’ et ‘double’, ces deux dernières étant des types différents de variables numériques. Les opérations et les fonctions que vous pouvez appliquer à une variable dépendent de leur type. Ces informations sont donc très utiles, notamment pour comprendre pourquoi vous obtenez des erreurs ou que les choses ne se passent pas comme prévu. Par exemple, chaque fois que vous essayez de faire un calcul avec une variable de type caractère, R vous donnera une erreur.</p>
+<div id="section-créer-des-variables-catégorielles-en-utilisant-ifelse" class="section level3">
+<h3>créer des variables catégorielles en utilisant ifelse()</h3>
+<p>Jusqu’à présent, nous avons créé une colonne numérique (<code>hh_size</code> était de type entier) et une colonne de type logique. La création d’une variable catégorielle est un peu moins simple. Voyons une conne façon de le faire, en utilisant la fonction R native <code>ifelse()</code>, qui vérifie chaque ligne pour une condition et retourne une valeur qui dépend de cette condition. <code>ifelse()</code> prend trois arguments. Une condition à vérifier, une valeur qui est retournée si la condition est vérifiée, et une valeur retournée si la condition n’est <strong>pas</strong> vérifiée. La syntaxe est donc :</p>
+<p>ifelse(<code>CONDITION</code>, <code>VALEUR SI LA CONDITION EST VRAIE</code>, <code>VALEUR SI LA CONDITION EST FAUSSE</code>)</p>
+Essayons avec un exemple simple. Nous allons créer une simple colonne hh_occupation, qui ne prend que deux valeurs : “Agriculteur” ou “Autre”. Pour rappel, voici les valeurs que la colonne OCCUH prend dans notre jeu de données :
 <div class="tutorial-exercise" data-label="mutate_2c" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>BeanSurvey$OCCUHH</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-<p>To generate a variable that takes the value “Farmer” if the occupation of the head of household is farmer, and “other” otherwise, we can use the following command:</p>
+<p>Pour générer une variable qui prend la valeur “Agriculteur” si l’occupation du chef de ménage est agriculteur, et “autre” sinon, nous pouvons utiliser la commande suivante :</p>
 <div class="tutorial-exercise" data-label="mutate_2d" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>ifelse(BeanSurvey$OCCUHH == &quot;Farmer&quot;, &quot;Farmer&quot;, &quot;Other&quot;)</code></pre>
+<pre class="text"><code>ifelse(BeanSurvey$OCCUHH == &quot;Farmer&quot;, &quot;Agriculteur&quot;, &quot;Autre&quot;)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-<p>And we can do the same, but inside the function mutate, to add this variable to our dataset. We need to remove “BeanSurvey$” from the command though, since the data is already indicated as the first argument of mutate.</p>
+<p>Et nous pouvons faire la même chose, mais à l’intérieur de la fonction mutate(), pour ajouter cette variable à notre tableau de données. Nous devons cependant supprimer “BeanSurvey$” de la commande, puisque les données sont déjà indiquées comme premier argument de la mutation.</p>
 <div class="tutorial-exercise" data-label="mutate_2e" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>mutate(BeanSurvey, hh_occupation = ifelse(OCCUHH== &quot;Farmer&quot;, &quot;Farmer&quot;, &quot;Other&quot;))</code></pre>
+<pre class="text"><code>mutate(BeanSurvey, hh_occupation = ifelse(OCCUHH== &quot;Farmer&quot;, &quot;Agriculteur&quot;, &quot;Autre&quot;))</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
 </div>
-<div id="section-creating-multiple-columns-and-replacing-columns" class="section level3">
-<h3>creating multiple columns and replacing columns</h3>
-<p>Of course, we can create multiple columns at once. We simply need to separate the associated calculations with commas.</p>
+<div id="section-créer-plusieurs-colonnes-et-remplacer-des-colonnes" class="section level3">
+<h3>créer plusieurs colonnes et remplacer des colonnes</h3>
+<p>Bien sûr, nous pouvons créer plusieurs colonnes à la fois. Il suffit de séparer les calculs associés par des virgules.</p>
 <div class="tutorial-exercise" data-label="mutate_3" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>mutate(BeanSurvey, hh_size = ADULTS + CHILDREN, has_children = CHILDREN &gt; 0, hh_occupation = ifelse(OCCUHH== &quot;Farmer&quot;, &quot;Farmer&quot;, &quot;Other&quot;))</code></pre>
+<pre class="text"><code>mutate(BeanSurvey, hh_size = ADULTS + CHILDREN, has_children = CHILDREN &gt; 0, hh_occupation = ifelse(OCCUHH== &quot;Farmer&quot;, &quot;Agriculteur&quot;, &quot;Autre&quot;))</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-<p>Also if you remember, I said that mutate can also “modify” a column. You achieve that by using an already existing column name as the name of your new column. Here we replace the variable <code>CHILDREN</code> rather than creating the variable <code>has_children</code>:</p>
+<p>Et si vous vous souvenez bien, j’ai dit que <code>mutate()</code> peut aussi “modifier” une colonne. Vous y parvenez en utilisant le nom d’une colonne déjà existante comme nom de votre nouvelle colonne. Ici, nous remplaçons la variable <code>CHILDREN</code> plutôt que de créer la variable <code>has_children</code> :</p>
 <div class="tutorial-exercise" data-label="mutate_4" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>mutate(BeanSurvey, CHILDREN = CHILDREN &gt; 0)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
-<p>You need to be careful when modifying existing columns though. In general, as it’s not too much of a pain to have lots of columns - since we have the function <code>select()</code> to pick the ones we want - we often prefer to create new columns rather than modifying existing ones.</p>
-<p><strong>Question: create a column that measures the yield of beans per acre of each household in long rain season. Give it a sensible name</strong></p>
+<p>Vous devez cependant être prudent lorsque vous modifiez des colonnes existantes. En général, comme il n’est pas trop ennuyeux d’avoir beaucoup de colonnes - puisque nous avons la fonction <code>select()</code> pour choisir celles que nous voulons - nous préférons souvent créer de nouvelles colonnes plutôt que de modifier celles qui existent déjà.</p>
+<p><strong>Question : créer une colonne qui mesure le rendement de haricots par acre de chaque ménage pendant la longue saison des pluies. Donnez-lui un nom sensé</strong></p>
 <div class="tutorial-exercise" data-label="mutate_5" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
 </div>
 <div class="tutorial-exercise-support" data-label="mutate_5-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>mutate(BeanSurvey, yield_per_acre_LR = BEANSHARVESTED_LR/LANDAREA)</code></pre>
 </div>
-<p>Such new column will be useful for analysing our dataset, but we still don’t know how to associate the result of our manipulations with each other and other operations. Time for the second part of the dplyr session!</p>
+<p>Cette nouvelle colonne sera utile pour analyser notre tableau de données, mais nous ne savons toujours pas comment associer les résultats de nos manipulations entre elles et avec d’autres opérations. Il est temps de passer a la deuxième partie de la session dplyr !</p>
 </div>
 </div>
-<div id="section-appendix-beansurvey-dataset" class="section level2">
-<h2>Appendix: ‘BeanSurvey’ dataset</h2>
-<p>The data we are using in this session is an extract of a survey conducted in Uganda from farmers identified as growing beans.</p>
-<p>The dataset contains an extract of 50 responses to 23 of the survey questions, and has been imported to R as a data frame called <code>BeanSurvey</code>.</p>
-<p>A summary of the columns in the dataset is below.</p>
+<div id="section-annexe-données-beansurvey" class="section level2">
+<h2>Annexe : données "BeanSurvey</h2>
+<p>Les données que nous utilisons dans cette session sont un extrait d’une enquête menée en Ouganda auprès d’agriculteurs identifiés comme cultivant des haricots.</p>
+<p>Le tableau de données contient un extrait de 50 réponses à 23 des questions de l’enquête, et a été importé dans R en tant que base de données appelée “BeanSurvey”.</p>
+<p>Un résumé des colonnes du tableau de données est présenté ci-dessous.</p>
 <table>
+<colgroup>
+<col width="21%" />
+<col width="78%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th align="left">Column</th>
@@ -480,109 +483,109 @@ Let’s try with a simple example. We’ll create a simple column hh_occupation,
 <tbody>
 <tr class="odd">
 <td align="left">ID</td>
-<td align="left">Farmer ID</td>
+<td align="left">Identifiant de l’agriculteur</td>
 </tr>
 <tr class="even">
 <td align="left">VILLAGE</td>
-<td align="left">Village name</td>
+<td align="left">Nom du village</td>
 </tr>
 <tr class="odd">
 <td align="left">HHTYPE</td>
-<td align="left">Household composition</td>
+<td align="left">Composition du ménage</td>
 </tr>
 <tr class="even">
 <td align="left">GENDERHH</td>
-<td align="left">Gender of Household Head</td>
+<td align="left">Sexe du chef de ménage</td>
 </tr>
 <tr class="odd">
 <td align="left">AGEHH</td>
-<td align="left">Age of Household Head</td>
+<td align="left">Âge du chef de ménage</td>
 </tr>
 <tr class="even">
 <td align="left">OCCUHH</td>
-<td align="left">Occupation of Household Head</td>
+<td align="left">Occupation du chef de ménage</td>
 </tr>
 <tr class="odd">
 <td align="left">ADULTS</td>
-<td align="left">Number of Adults within the household</td>
+<td align="left">Nombre d’adultes dans le ménage</td>
 </tr>
 <tr class="even">
 <td align="left">CHILDREN</td>
-<td align="left">Number of Children (&lt;18) within the household</td>
+<td align="left">Nombre d’enfants (&lt;18) au sein du ménage</td>
 </tr>
 <tr class="odd">
 <td align="left">MATOKE</td>
-<td align="left">Do they grow matoke?</td>
+<td align="left">Cultivent-ils du matoke?</td>
 </tr>
 <tr class="even">
 <td align="left">MAIZE</td>
-<td align="left">Do they grow maize?</td>
+<td align="left">Cultivent-ils du maïs?</td>
 </tr>
 <tr class="odd">
 <td align="left">BEANS</td>
-<td align="left">Do they grow beans?</td>
+<td align="left">Cultivent-ils des haricots?</td>
 </tr>
 <tr class="even">
 <td align="left">BANANA</td>
-<td align="left">Do they grow banana?</td>
+<td align="left">Cultivent-ils des bananes?</td>
 </tr>
 <tr class="odd">
 <td align="left">CASSAVA</td>
-<td align="left">Do they grow cassava?</td>
+<td align="left">Cultivent-ils du manioc?</td>
 </tr>
 <tr class="even">
 <td align="left">COFFEE</td>
-<td align="left">Do they grow coffee?</td>
+<td align="left">Cultivent-ils du café?</td>
 </tr>
 <tr class="odd">
 <td align="left">LANDAREA</td>
-<td align="left">Land area of farm (acres)</td>
+<td align="left">Superficie de la ferme (acres)</td>
 </tr>
 <tr class="even">
 <td align="left">LABOR</td>
-<td align="left">Labor usage</td>
+<td align="left">Utilisation de la main-d’oeuvre</td>
 </tr>
 <tr class="odd">
 <td align="left">INTERCROP</td>
-<td align="left">Intercrops with beans</td>
+<td align="left">Cultures intercalaires avec des haricots</td>
 </tr>
 <tr class="even">
 <td align="left">DECISIONS</td>
-<td align="left">Household decision responsibility</td>
+<td align="left">Responsabilité de décision des ménages</td>
 </tr>
 <tr class="odd">
 <td align="left">SELLBEANS</td>
-<td align="left">Do they grow beans for sale?</td>
+<td align="left">Cultivent-ils des haricots pour la vente?</td>
 </tr>
 <tr class="even">
 <td align="left">BEANSPLANTED_LR</td>
-<td align="left">Quantity of beans planted in long rain season</td>
+<td align="left">Quantité de haricots plantés pendant la longue saison des pluies</td>
 </tr>
 <tr class="odd">
 <td align="left">BEANSPLANTED_SR</td>
-<td align="left">Quantity of beans planted in short rain season</td>
+<td align="left">Quantité de haricots plantés pendant la courte saison des pluies</td>
 </tr>
 <tr class="even">
 <td align="left">BEANSHARVESTED_LR</td>
-<td align="left">Quantity of beans harvested in long rain season</td>
+<td align="left">Quantité de haricots récoltés pendant la longue saison des pluies</td>
 </tr>
 <tr class="odd">
 <td align="left">BEANSHARVESTED_SR</td>
-<td align="left">Quantity of beans harvested in short rain season</td>
+<td align="left">Quantité de haricots récoltés pendant la courte saison des pluies</td>
 </tr>
 </tbody>
 </table>
-<p>Spend some time looking through the exploring the full dataset embedded below, to familiarise yourself with the columns and the type of data stored within each column. You may need to refer back to this data at times during this tutorial. Remember that R is case sensitive, so you will always have to refer to the variables in this dataset exactly as they are written in the data. There is a column in this data called “GENDERHH” but there is no column in this data called “GenderHH”.</p>
-<div id="htmlwidget-318cf4de8f91de2374c2" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-318cf4de8f91de2374c2">{"x":{"filter":"none","data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50"],[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50],["Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala"],["Female headed, no husband","Female headed, no husband","Male headed one wife","Female headed, no husband","Single man","Single man","Female headed, no husband","Male headed one wife","Female headed, no husband","Male headed one wife","Male headed more than one wife","Male headed one wife","Male headed one wife","Male headed more than one wife","Female headed, no husband","Female headed, no husband","Other","Female headed, no husband","Male headed more than one wife","Female headed, no husband","Male headed one wife","Male headed one wife","Male headed one wife","Male headed one wife","Male headed one wife","Male headed one wife","Male headed one wife","Male headed one wife","Male headed one wife","Female headed, no husband","Male headed one wife","Female headed, no husband","Male headed one wife","Male headed one wife","Male headed one wife","Male headed one wife","Female headed, no husband","Male headed one wife","Female headed absentee husband","Female headed absentee husband","Female headed, no husband","Male headed more than one wife","Male headed one wife","Male headed one wife","Male headed one wife","Male headed one wife","Male headed one wife","Male headed one wife","Male headed one wife","Female headed absentee husband"],["female","female","male","female","male","male","female","male","female","male","male","male","male","male","female","female",null,"female","male","female","male","male","male","male","male","male","male","male","male","female","male","female","male","male","male","male","female","male","female","female","female","male","male","male","male","male","male","male","male","female"],["31 - 40","51 - 60","20 - 30","51 - 60","61+","41 - 50","20 - 30","41 - 50","41 - 50","51 - 60","61+","61+","31 - 40","20 - 30","41 - 50","61+","51 - 60","31 - 40","20 - 30","41 - 50","20 - 30","41 - 50","31 - 40","20 - 30","20 - 30","20 - 30","41 - 50","20 - 30","51 - 60","61+","20 - 30","61+","61+","51 - 60","31 - 40","20 - 30","31 - 40","20 - 30","31 - 40","Unknown","41 - 50","20 - 30","51 - 60","31 - 40","61+","41 - 50","51 - 60","20 - 30","61+","31 - 40"],["Farmer","Farmer","Farmer","Farmer","Trader","Farmer","Farmer","Farmer","Farmer","Farmer","Farmer","Farmer","Fisherman","Pitsawer","Farmer","Farmer","Farmer","Farmer","Farmer","Farmer","Farmer","Farmer","Teacher","Farmer","Farmer","Farmer","Farmer","Farmer","Farmer","Farmer","Farmer","Farmer","Farmer","Farmer","Farmer","Farmer","Farmer","Farmer","Trader","Shop attendant","Farmer","Farmer","Farmer","Pitsawer","Farmer","Fisherman","Farmer","Farmer","Farmer","Fisherman"],[1,3,2,3,1,1,1,2,1,3,4,3,2,2,2,2,1,1,2,3,2,3,2,3,2,1,1,2,13,1,2,2,2,2,2,2,2,5,3,2,2,3,4,2,2,4,2,2,3,3],[2,3,4,4,0,0,1,4,1,3,0,2,3,2,3,1,2,1,2,6,2,4,2,2,2,1,1,1,3,5,5,1,0,3,3,2,3,2,2,4,3,3,2,3,2,4,2,0,2,1],["Yes","Yes","Yes","Yes","No","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","No","No","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","No","Yes","Yes","No","Yes","No","No","Yes","Yes","Yes","Yes","Yes","Yes","No","Yes"],["Yes","Yes","Yes","Yes","No","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","No","Yes","No","Yes","No","Yes","Yes","No","Yes","Yes","Yes","Yes","Yes","No","Yes","Yes","No","Yes","Yes","Yes","Yes","Yes","Yes","Yes","No","Yes","No","No","Yes","Yes","Yes","Yes","No","Yes"],["Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","No","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes"],["No","No","No","No","No","Yes","No","Yes","Yes","Yes","Yes","No","Yes","No","No","No","Yes","No","No","No","No","No","No","No","No","No","No","No","Yes","No","No","No","No","No","No","No","No","Yes","No","No","No","No","No","No","Yes","Yes","No","No","No","No"],["Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes"],["Yes","Yes","No","No","Yes","Yes","No","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","No","Yes","Yes","Yes","Yes","Yes","No","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","No","Yes","Yes","No","Yes","No","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes"],[0.75,0.75,3,0.75,0.75,10,2,1.25,2,2,1.25,3,1.25,0.75,0.75,6.5,2,3,4.25,4.25,2,10,3,2,1.25,2,0.75,3,4.25,0.75,1.25,0.75,0.75,6.5,1.25,0.375,1.25,10,1.25,4.25,0.375,1.25,0.75,6.5,0.75,2,1.25,0.375,1.25,2],["Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses hired labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses hired labor","Uses hired labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses hired labor","Uses hired labor","Uses neither hired or exchange labor","Uses hired labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses hired labor","Uses hired labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses both hired and exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses hired labor","Uses both hired and exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses both hired and exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor"],["2 or more crops","Cassava","Cassava","Maize","Maize","Sole crop","Sole crop","Sole crop","2 or more crops","2 or more crops","Sole crop","Sole crop","Cassava","2 or more crops","Maize","Maize","Sole crop","Cassava","Cassava","Maize","Cassava","2 or more crops","Sole crop","Bananas","Cassava","2 or more crops","Sole crop","Cassava","2 or more crops","Cassava","Cassava","Bananas","Cassava","Sole crop","Cassava","Maize","Maize","Maize","Cassava","2 or more crops","Cassava","2 or more crops","Cassava","2 or more crops","Other","Cassava","2 or more crops","Cassava","Cassava","Bananas"],["Female farmer only","Female farmer only","Female farmer only","Female farmer only","Male farmer only","Male farmer only","Female farmer only","Female farmer, consults male farmer","Female farmer only","Both male and female farmer equally","Male farmer only","Both male and female farmer equally","Female farmer only","Female farmer only","Female farmer only","Female farmer only","Male farmer only","Female farmer only","Female farmer only","Female farmer only","Both male and female farmer equally","Female farmer only","Female farmer only","Female farmer only","Female farmer only","Female farmer only","Both male and female farmer equally","Female farmer only","Female farmer only","Female farmer only","Female farmer only","Other","Female farmer, consults male farmer","Female farmer, consults male farmer","Female farmer only","Female farmer only","Female farmer only","Both male and female farmer equally","Female farmer only","Female farmer only","Female farmer only","Female farmer only","Both male and female farmer equally","Female farmer only","Both male and female farmer equally","Female farmer only","Male farmer, consults female farmer","Female farmer only","Female farmer only","Female farmer only"],["No","Yes","No","No","Yes","Yes","No","Yes","Yes","Yes","No","Yes","Yes","Yes","Yes","Yes","No","No","No","No","No","No","Yes","Yes","No","No","No","No","Yes","No","No","No","No","No","No","No","No","No","Yes","No","No","No","No","No","No","No","Yes","Yes","No","No"],[0,4,0,2,1.5,40,0,3,2,3,3,28,0,0,0,5,0,0,5,null,0,10,20,0,7,2.5,0,0,5,2,4.5,0,1,1,2,2,2.5,null,0,0,0,1.5,2,5,2.5,2,4,0,0.5,0],[0,4,0,0,2.5,40,3,0,2,0,2.5,0,1,0,0,3.5,0,0,0,16,2,5,4,3,4,0,1,3,0,3.25,0,0,0,0.75,0,2,2,3,8,0,4,0,0,0,0,0,0,8,0.5,2],[0,10,0,3,20,200,0,null,20,30,10,100,0,0,0,40,0,0,10,null,0,30,90,0,23,10,0,0,10,4,30,0,2,10,10,14,11.5,null,0,0,0,4,7,9,4,8,28,0,2.5,0],[0,0,0,0,13,100,0,0,5,0,15,0,2,0,0,5,0,0,0,50,4,10,20,50,0,0,3,20,0,5,0,0,0,3.75,0,20,4.5,null,18,0,15,0,0,0,0,0,0,100,2,5]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>ID<\/th>\n      <th>VILLAGE<\/th>\n      <th>HHTYPE<\/th>\n      <th>GENDERHH<\/th>\n      <th>AGEHH<\/th>\n      <th>OCCUHH<\/th>\n      <th>ADULTS<\/th>\n      <th>CHILDREN<\/th>\n      <th>MATOKE<\/th>\n      <th>MAIZE<\/th>\n      <th>BEANS<\/th>\n      <th>BANANA<\/th>\n      <th>CASSAVA<\/th>\n      <th>COFFEE<\/th>\n      <th>LANDAREA<\/th>\n      <th>LABOR<\/th>\n      <th>INTERCROP<\/th>\n      <th>DECISIONS<\/th>\n      <th>SELLBEANS<\/th>\n      <th>BEANSPLANTED_LR<\/th>\n      <th>BEANSPLANTED_SR<\/th>\n      <th>BEANSHARVESTED_LR<\/th>\n      <th>BEANSHARVESTED_SR<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,7,8,15,20,21,22,23]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
-<p>(You can use the arrow keys on your keyboard to scroll right in case the data table does not fit entirely on your screen)</p>
+<p>Prenez le temps de parcourir le tableau des données ci-dessous pour vous familiariser avec les colonnes et le type de données stockées dans chacune d’elles. Vous aurez peut-être besoin de vous référer à ces données à certains moments au cours de ce tutoriel. N’oubliez pas que R est sensible à la casse, vous devrez donc toujours vous référer aux variables de ce tableau de données exactement comme elles sont écrites dans les données. Il y a une colonne dans ces données appelée “GENDERHH” mais il n’y a pas de colonne dans ces données appelée “GenderHH”.</p>
+<div id="htmlwidget-f5267e4f0774063e8b1e" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-f5267e4f0774063e8b1e">{"x":{"filter":"none","data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50"],[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50],["Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Kimbugu","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala","Lwala"],["Female headed, no husband","Female headed, no husband","Male headed one wife","Female headed, no husband","Single man","Single man","Female headed, no husband","Male headed one wife","Female headed, no husband","Male headed one wife","Male headed more than one wife","Male headed one wife","Male headed one wife","Male headed more than one wife","Female headed, no husband","Female headed, no husband","Other","Female headed, no husband","Male headed more than one wife","Female headed, no husband","Male headed one wife","Male headed one wife","Male headed one wife","Male headed one wife","Male headed one wife","Male headed one wife","Male headed one wife","Male headed one wife","Male headed one wife","Female headed, no husband","Male headed one wife","Female headed, no husband","Male headed one wife","Male headed one wife","Male headed one wife","Male headed one wife","Female headed, no husband","Male headed one wife","Female headed absentee husband","Female headed absentee husband","Female headed, no husband","Male headed more than one wife","Male headed one wife","Male headed one wife","Male headed one wife","Male headed one wife","Male headed one wife","Male headed one wife","Male headed one wife","Female headed absentee husband"],["female","female","male","female","male","male","female","male","female","male","male","male","male","male","female","female",null,"female","male","female","male","male","male","male","male","male","male","male","male","female","male","female","male","male","male","male","female","male","female","female","female","male","male","male","male","male","male","male","male","female"],["31 - 40","51 - 60","20 - 30","51 - 60","61+","41 - 50","20 - 30","41 - 50","41 - 50","51 - 60","61+","61+","31 - 40","20 - 30","41 - 50","61+","51 - 60","31 - 40","20 - 30","41 - 50","20 - 30","41 - 50","31 - 40","20 - 30","20 - 30","20 - 30","41 - 50","20 - 30","51 - 60","61+","20 - 30","61+","61+","51 - 60","31 - 40","20 - 30","31 - 40","20 - 30","31 - 40","Unknown","41 - 50","20 - 30","51 - 60","31 - 40","61+","41 - 50","51 - 60","20 - 30","61+","31 - 40"],["Farmer","Farmer","Farmer","Farmer","Trader","Farmer","Farmer","Farmer","Farmer","Farmer","Farmer","Farmer","Fisherman","Pitsawer","Farmer","Farmer","Farmer","Farmer","Farmer","Farmer","Farmer","Farmer","Teacher","Farmer","Farmer","Farmer","Farmer","Farmer","Farmer","Farmer","Farmer","Farmer","Farmer","Farmer","Farmer","Farmer","Farmer","Farmer","Trader","Shop attendant","Farmer","Farmer","Farmer","Pitsawer","Farmer","Fisherman","Farmer","Farmer","Farmer","Fisherman"],[1,3,2,3,1,1,1,2,1,3,4,3,2,2,2,2,1,1,2,3,2,3,2,3,2,1,1,2,13,1,2,2,2,2,2,2,2,5,3,2,2,3,4,2,2,4,2,2,3,3],[2,3,4,4,0,0,1,4,1,3,0,2,3,2,3,1,2,1,2,6,2,4,2,2,2,1,1,1,3,5,5,1,0,3,3,2,3,2,2,4,3,3,2,3,2,4,2,0,2,1],["Yes","Yes","Yes","Yes","No","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","No","No","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","No","Yes","Yes","No","Yes","No","No","Yes","Yes","Yes","Yes","Yes","Yes","No","Yes"],["Yes","Yes","Yes","Yes","No","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","No","Yes","No","Yes","No","Yes","Yes","No","Yes","Yes","Yes","Yes","Yes","No","Yes","Yes","No","Yes","Yes","Yes","Yes","Yes","Yes","Yes","No","Yes","No","No","Yes","Yes","Yes","Yes","No","Yes"],["Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","No","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes"],["No","No","No","No","No","Yes","No","Yes","Yes","Yes","Yes","No","Yes","No","No","No","Yes","No","No","No","No","No","No","No","No","No","No","No","Yes","No","No","No","No","No","No","No","No","Yes","No","No","No","No","No","No","Yes","Yes","No","No","No","No"],["Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes"],["Yes","Yes","No","No","Yes","Yes","No","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","No","Yes","Yes","Yes","Yes","Yes","No","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","No","Yes","Yes","No","Yes","No","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes"],[0.75,0.75,3,0.75,0.75,10,2,1.25,2,2,1.25,3,1.25,0.75,0.75,6.5,2,3,4.25,4.25,2,10,3,2,1.25,2,0.75,3,4.25,0.75,1.25,0.75,0.75,6.5,1.25,0.375,1.25,10,1.25,4.25,0.375,1.25,0.75,6.5,0.75,2,1.25,0.375,1.25,2],["Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses hired labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses hired labor","Uses hired labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses hired labor","Uses hired labor","Uses neither hired or exchange labor","Uses hired labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses hired labor","Uses hired labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses both hired and exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses hired labor","Uses both hired and exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses both hired and exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor","Uses neither hired or exchange labor"],["2 or more crops","Cassava","Cassava","Maize","Maize","Sole crop","Sole crop","Sole crop","2 or more crops","2 or more crops","Sole crop","Sole crop","Cassava","2 or more crops","Maize","Maize","Sole crop","Cassava","Cassava","Maize","Cassava","2 or more crops","Sole crop","Bananas","Cassava","2 or more crops","Sole crop","Cassava","2 or more crops","Cassava","Cassava","Bananas","Cassava","Sole crop","Cassava","Maize","Maize","Maize","Cassava","2 or more crops","Cassava","2 or more crops","Cassava","2 or more crops","Other","Cassava","2 or more crops","Cassava","Cassava","Bananas"],["Female farmer only","Female farmer only","Female farmer only","Female farmer only","Male farmer only","Male farmer only","Female farmer only","Female farmer, consults male farmer","Female farmer only","Both male and female farmer equally","Male farmer only","Both male and female farmer equally","Female farmer only","Female farmer only","Female farmer only","Female farmer only","Male farmer only","Female farmer only","Female farmer only","Female farmer only","Both male and female farmer equally","Female farmer only","Female farmer only","Female farmer only","Female farmer only","Female farmer only","Both male and female farmer equally","Female farmer only","Female farmer only","Female farmer only","Female farmer only","Other","Female farmer, consults male farmer","Female farmer, consults male farmer","Female farmer only","Female farmer only","Female farmer only","Both male and female farmer equally","Female farmer only","Female farmer only","Female farmer only","Female farmer only","Both male and female farmer equally","Female farmer only","Both male and female farmer equally","Female farmer only","Male farmer, consults female farmer","Female farmer only","Female farmer only","Female farmer only"],["No","Yes","No","No","Yes","Yes","No","Yes","Yes","Yes","No","Yes","Yes","Yes","Yes","Yes","No","No","No","No","No","No","Yes","Yes","No","No","No","No","Yes","No","No","No","No","No","No","No","No","No","Yes","No","No","No","No","No","No","No","Yes","Yes","No","No"],[0,4,0,2,1.5,40,0,3,2,3,3,28,0,0,0,5,0,0,5,null,0,10,20,0,7,2.5,0,0,5,2,4.5,0,1,1,2,2,2.5,null,0,0,0,1.5,2,5,2.5,2,4,0,0.5,0],[0,4,0,0,2.5,40,3,0,2,0,2.5,0,1,0,0,3.5,0,0,0,16,2,5,4,3,4,0,1,3,0,3.25,0,0,0,0.75,0,2,2,3,8,0,4,0,0,0,0,0,0,8,0.5,2],[0,10,0,3,20,200,0,null,20,30,10,100,0,0,0,40,0,0,10,null,0,30,90,0,23,10,0,0,10,4,30,0,2,10,10,14,11.5,null,0,0,0,4,7,9,4,8,28,0,2.5,0],[0,0,0,0,13,100,0,0,5,0,15,0,2,0,0,5,0,0,0,50,4,10,20,50,0,0,3,20,0,5,0,0,0,3.75,0,20,4.5,null,18,0,15,0,0,0,0,0,0,100,2,5]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>ID<\/th>\n      <th>VILLAGE<\/th>\n      <th>HHTYPE<\/th>\n      <th>GENDERHH<\/th>\n      <th>AGEHH<\/th>\n      <th>OCCUHH<\/th>\n      <th>ADULTS<\/th>\n      <th>CHILDREN<\/th>\n      <th>MATOKE<\/th>\n      <th>MAIZE<\/th>\n      <th>BEANS<\/th>\n      <th>BANANA<\/th>\n      <th>CASSAVA<\/th>\n      <th>COFFEE<\/th>\n      <th>LANDAREA<\/th>\n      <th>LABOR<\/th>\n      <th>INTERCROP<\/th>\n      <th>DECISIONS<\/th>\n      <th>SELLBEANS<\/th>\n      <th>BEANSPLANTED_LR<\/th>\n      <th>BEANSPLANTED_SR<\/th>\n      <th>BEANSHARVESTED_LR<\/th>\n      <th>BEANSHARVESTED_SR<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,7,8,15,20,21,22,23]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<p>(Vous pouvez utiliser les touches fléchées de votre clavier pour faire défiler vers la droite au cas où le tableau de données ne tiendrait pas entièrement sur votre écran)</p>
 </div>
-<div id="section-appendix-useful-reference-links" class="section level2">
-<h2>Appendix: Useful reference links</h2>
-<p>The official dplyr documentation: <a href="https://dplyr.tidyverse.org/" target="_blank">https://dplyr.tidyverse.org/</a></p>
-<p>dplyr CheatSheet:<a href="https://github.com/rstudio/cheatsheets/blob/master/data-transformation.pdf" target="_blank">https://github.com/rstudio/cheatsheets/blob/master/data-transformation.pdf </a></p>
-<p>Data Manipulation Tools - Rstudio video: <a href="https://www.youtube.com/watch?v=Zc_ufg4uW4U" target="_blank">dplyr – Pt 3 Intro to the Grammar of Data Manipulation with R </a></p>
-<p>Some documentation on subsetting r-objects using base-R: <a href="https://bookdown.org/rdpeng/rprogdatascience/subsetting-r-objects.html" target="_blank">https://bookdown.org/rdpeng/rprogdatascience/subsetting-r-objects.html </a></p>
+<div id="section-annexe-liens-de-référence-utiles" class="section level2">
+<h2>Annexe : Liens de référence utiles</h2>
+<p>La documentation officielle de dplyr (en anglais): <a href="https://dplyr.tidyverse.org/" target="_blank">https://dplyr.tidyverse.org/</a></p>
+<p>Bon chapitre sur l’utilisation de dplyr: <a href="https://juba.github.io/tidyverse/10-dplyr.html" target="_blank">https://juba.github.io/tidyverse/10-dplyr.html</a></p>
+<p>Aide memoire dplyr “CheatSheet” (en anglais):<a href="https://github.com/rstudio/cheatsheets/blob/master/data-transformation.pdf" target="_blank">https://github.com/rstudio/cheatsheets/blob/master/data-transformation.pdf </a></p>
+<p>“Data Manipulation Tools” - video youtube par RStudio (en anglais): <a href="https://www.youtube.com/watch?v=Zc_ufg4uW4U" target="_blank">dplyr – Pt 3 Intro to the Grammar of Data Manipulation with R </a></p>
 
 <script type="application/shiny-prerendered" data-context="server-start">
 library(learnr)
@@ -931,7 +934,7 @@ output$`tutorial-exercise-mutate_5-output` <- renderUI({
 
 <!-- begin doc-metadata -->
 <div id="doc-metadata">
-<h2 class="title toc-ignore" style="display:none;">Manipulating Data using dplyr: part 1</h2>
+<h2 class="title toc-ignore" style="display:none;">Manipulation des données à l’aide de dplyr : partie 1</h2>
 </div>
 <!-- end doc-metadata -->
 
